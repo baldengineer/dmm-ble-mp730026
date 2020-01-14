@@ -13,6 +13,28 @@ def decode_mode_and_range(data):
 	mode_string = "???"
 	range_decimal_pos = 5
 
+
+################################
+## Current
+################################
+
+	if (mode == 0x99F0):
+		#xxx.x mA
+		mode_string = "mA"
+		range_decimal_pos = 3
+
+	if (mode == 0x9AF0):
+		# xx.xx mA
+		mode_string = "mA"
+		range_decimal_pos = 2
+
+	if (mode == 0x9BF0):
+		# unverified
+		# x.xxx mA
+		mode_string = "mA"
+		range_decimal_pos = 1
+
+
 ################################
 ## Resistance
 ################################
@@ -225,7 +247,7 @@ def decode_reading_into_hex(data, decimal_position):
 		if (readingMSB > 0x7F):
 			value = value & 0x7FFF
 			value = value * -1
-			decimal_position = decimal_position + 1 # placeholder for the minus sign
+			#decimal_position = decimal_position + 1 # placeholder for the minus sign
 
 		#convert the integer to a string
 		final_value = "{:04d}".format(value)
@@ -278,3 +300,7 @@ def print_DMM_packet(data):
 	#if (debug): print("incomingData = " + str(incomingData))
 
 	#print_DMM_packet(incomingData)
+
+
+
+
