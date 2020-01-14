@@ -1,6 +1,14 @@
+#!/usr/bin/python
+
+# Created by james lewis (baldengineer)
+# MIT License
+# DMM Decode Byte Array
+# Script to connect to Multicomp Pro MP730026 by BLE with the Bleak Module
+
 import logging
 import asyncio
 import platform
+from dmm_decode_bytearray import print_DMM_packet
 
 from bleak import BleakClient
 from bleak import _logger as logger
@@ -15,17 +23,22 @@ from bleak import _logger as logger
 CHARACTERISTIC_UUID = "0000fff4-0000-1000-8000-00805f9b34fb"
 
 
-def notification_handler(sender, data):
+def notification_handler(sender, data, debug=False):
     """Simple notification handler which prints the data received."""
     #print("{0}: {1}".format(sender, data))
-    print("Data is " + str(type(data)))
+    if (debug): print("Handling...")
+    if (debug): print("Data is " + str(type(data)))
+    
+
     array = bytearray(data)
-    print(str(sender) + " : ", end="")
-    for arr in array:
-        #print(hex(arr) + "," + str(arr))
-        print(hex(arr))
-    print("")
-    print("... done handling")
+    
+    if (debug): print(str(sender) + " : ", end="")
+    if (debug): 
+        for arr in array:
+            print(hex(arr))
+        print("")
+    if (debug): print("... done handling")
+    print_DMM_packet(array)
 
 async def run(address, loop, debug=False):
     if debug:
@@ -44,8 +57,8 @@ async def run(address, loop, debug=False):
         logger.info("Connected: {0}".format(x))
 
         await client.start_notify(CHARACTERISTIC_UUID, notification_handler)
-       # await asyncio.sleep(5.0, loop=loop)
-       # await client.stop_notify(CHARACTERISTIC_UUID)
+        await asyncio.sleep(60.0, loop=loop)
+        await client.stop_notify(CHARACTERISTIC_UUID)
 
 
 if __name__ == "__main__":
@@ -58,4 +71,4 @@ if __name__ == "__main__":
        # else "243E23AE-4A99-406C-B317-18F1BD7B4CBE"  # <--- Change to your device's address here if you are using macOS
     )
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(run(address, loop, True))
+    loop.run_until_complete(run(address, loop, False))
