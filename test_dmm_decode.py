@@ -1,13 +1,13 @@
 #!/usr/bin/python
 
-# Created by james lewis (baldengineer)
+# Created by james lewis (baldengineer) 2020-01
 # MIT License
 # test_dmm_decode
 # Script to test the decoder dmm_decode_bytearray.py
 
 from dmm_decode_bytearray import print_DMM_packet
 
-debug = True
+debug = False
 
 # need to recreate the data we get from bleak
 # real bleak-base code does not need this step
