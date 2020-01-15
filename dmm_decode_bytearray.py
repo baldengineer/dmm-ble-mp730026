@@ -1,4 +1,4 @@
-# Created by james lewis (baldengineer)
+# Created by james lewis (baldengineer) 2020-01
 # MIT License
 # DMM Decode Byte Array
 # Module to decode the byte stream from a MP730026 DMM
@@ -244,10 +244,9 @@ def decode_reading_into_hex(data, decimal_position):
 	if (value < 32676):
 		# there is a valid display value
 		# check if we have a negative value and handle it with bit masking
-		if (readingMSB > 0x7F):
-			value = value & 0x7FFF
-			value = value * -1
-			#decimal_position = decimal_position + 1 # placeholder for the minus sign
+		# later in the code, at the negative sign
+		if (readingMSB > 0x7F): value = value & 0x7FFF
+	
 
 		#convert the integer to a string
 		final_value = "{:04d}".format(value)
@@ -255,6 +254,7 @@ def decode_reading_into_hex(data, decimal_position):
 		if (decimal_position < 5):
 			# only process decimal if valid, 5 isn't a valid position
 			final_value = final_value[:decimal_position] + "." + final_value[decimal_position:]
+			if (readingMSB > 0x7F): final_value = "-" + final_value
 	else:
 		# there is not a valid display
 		final_value = "O.L" #TODO The decimal shouldn't be hard coded
@@ -281,26 +281,5 @@ def print_DMM_packet(data):
 	#print(f'Reading: {readingValue:04}')  # needs to be 05 when the decimal comes back
 	print("Reading: " + readingValue + " " + mode_desc[1])
 	#print(str(hex(readingValue)) + " " + str(readingValue))
-
-
-# need to recreate the data we get from bleak
-# real bleak-base code does not need this step
-#exampleData = [0x23, 0xF0, 0x04, 0x00, 0xDE, 0x85] # DC volts, -1.502 (Negative!!)
-#exampleData = [0x21, 0xF1, 0x04, 0x00, 0x34, 0x02] # Ohms, 056.4
-#exampleData = [0x23, 0xF0, 0x04, 0x00, 0xE6, 0x0C] # DC Volts, 3.302
-#exampleData = [0x22, 0xF0, 0x04, 0x00, 0x7E, 0x04] # DC Volts, 11.50
-#exampleData = [0x19, 0xF0, 0x04, 0x00, 0x41, 0x14] # mV, 518.5 mV
-
-# negatvies not working: [0x23, 0xF0, 0x04, 0x00, 0xDE, 0x85],
-#exampleArray = [[0x21, 0xF1, 0x04, 0x00, 0x34, 0x02],[0x23, 0xF0, 0x04, 0x00, 0xE6, 0x0C],[0x22, 0xF0, 0x04, 0x00, 0x7E, 0x04],[0x19, 0xF0, 0x04, 0x00, 0x41, 0x14]]
-
-#for exampleData in exampleArray:
-
-	#incomingData = bytearray(exampleData) 
-	#if (debug): print("incomingData = " + str(incomingData))
-
-	#print_DMM_packet(incomingData)
-
-
 
 

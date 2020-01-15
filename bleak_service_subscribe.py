@@ -2,7 +2,7 @@
 
 # Created by james lewis (baldengineer)
 # MIT License
-# DMM Decode Byte Array
+# Bleak_Service_Subscribe (TODO: Rename)
 # Script to connect to Multicomp Pro MP730026 by BLE with the Bleak Module
 
 import logging
