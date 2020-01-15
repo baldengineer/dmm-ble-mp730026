@@ -23,7 +23,7 @@ from bleak import _logger as logger
 CHARACTERISTIC_UUID = "0000fff4-0000-1000-8000-00805f9b34fb"
 
 
-def notification_handler(sender, data, debug=True):
+def notification_handler(sender, data, debug=False):
     """Simple notification handler which prints the data received."""
     #print("{0}: {1}".format(sender, data))
     if (debug): print("Handling...")

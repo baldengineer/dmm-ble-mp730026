@@ -4,15 +4,13 @@
 # Module to decode the byte stream from a MP730026 DMM
 
 # TODO
-# Decode Relative indicator: its the second element of the byte array, whenever it is 512
-# Decode HOld, it is the second element of the byte array, whenever it is 256
-# Decode Rel and Hold, it is 2nd element, and value is 768
-# ---- don't know why sometimes the byte is 1024
+# Overload on resistance is probably scaled wrong
+# hard to capture values
 
 import struct
 import numpy as np
 
-debug = True
+debug = False
 
 def decode_hold_and_rel(data):
 	rel_indicator_state = False
@@ -111,6 +109,11 @@ def decode_mode_and_range(data):
 ################################
 ## Resistance
 ################################
+	if (mode == 0x21f1):
+		mode_str = "Resistance"
+		units_str = "ohms"
+		range_decimal_pos = 3
+
 	if (mode == 0x22f1):
 		# unverified
 		# Ohms xx.xx ohms
@@ -143,6 +146,34 @@ def decode_mode_and_range(data):
 		mode_str = "Resistance"
 		units_str = "Kohms"
 		range_decimal_pos = 1
+
+
+	if (mode == 0x27f1):
+		mode_str = "Resistance"
+		units_str = "ohms"
+		range_decimal_pos = 3	
+
+	if (mode == 0x21f1):
+		mode_str = "Resistance"
+		units_str = "Kohms"
+		range_decimal_pos = 3
+
+	if (mode == 0x2ff1):
+		mode_str = "Resistance"
+		units_str = "Mohms"
+		range_decimal_pos = 3
+
+	if (mode == 0x32f1):
+		mode_str = "Resistance"
+		units_str = "Mohms"
+		range_decimal_pos = 2	
+
+	if (mode == 0x33f1):
+		# x.xxx Mohm
+		mode_str = "Resistance"
+		units_str = "Mohms"
+		range_decimal_pos = 1	
+
 
 
 	if (mode == 0x37F1):
