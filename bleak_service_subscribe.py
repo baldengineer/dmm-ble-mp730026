@@ -40,7 +40,7 @@ def notification_handler(sender, data, debug=False):
     if (debug): print("... done handling")
     print_DMM_packet(array)
 
-async def run(address, loop, debug=False):
+async def run(address, loop, debug=True):
     if debug:
         import sys
 
@@ -57,7 +57,7 @@ async def run(address, loop, debug=False):
         logger.info("Connected: {0}".format(x))
 
         await client.start_notify(CHARACTERISTIC_UUID, notification_handler)
-        await asyncio.sleep(60.0, loop=loop)
+        await asyncio.sleep(20.0, loop=loop)
         await client.stop_notify(CHARACTERISTIC_UUID)
 
 
