@@ -11,6 +11,7 @@
 
 import struct
 import numpy as np
+from values import values, mode_strings, unit_strings
 
 debug = False
 
@@ -26,412 +27,22 @@ def decode_hold_and_rel(data):
 		hold_indicator_state = True
 		rel_indicator_state = True
 
-	return [hold_indicator_state, rel_indicator_state] 
+	return [hold_indicator_state, rel_indicator_state]
 
 def decode_mode_and_range(data):
 	mode = data[0]
-	mode_str = str(hex(mode)) # its a new mode, so display it
-	units_str = "?"
-	range_decimal_pos = 5
 
-	
+	try:
+		mode_str = mode_strings[values[mode][0]]
+		units_str = unit_strings[values[mode][1]]
+		range_decimal_pos = values[mode][2]
 
-################################
-## DC Current
-################################
-	if (mode == 0x90F0):
-		# DC xxxx uA
-		mode_str = "DC Current"
-		units_str = "uA"
-		range_decimal_pos = 4
+	except KeyError:
+		#New mode
+		mode_str = str(hex(mode)) # its a new mode, so display it
+		units_str = "?"
+		range_decimal_pos = 5
 
-	if (mode == 0x91F0):
-		# DC xxx.x uA
-		mode_str = "DC Current"
-		units_str = "uA"
-		range_decimal_pos = 3
-
-	if (mode == 0x97F0):
-		# DC OL. uA
-		mode_str = "DC Current"
-		units_str = "uA"
-		range_decimal_pos = 3
-
-	if (mode == 0x99F0):
-		#xxx.x mA
-		mode_str = "DC Current"
-		units_str = "mA"
-		range_decimal_pos = 3
-
-	if (mode == 0x9AF0):
-		# xx.xx mA
-		mode_str = "DC Current"
-		units_str = "mA"
-		range_decimal_pos = 2
-
-	if (mode == 0xA2F0):
-		# xx.xx A
-		mode_str = "DC Current"
-		units_str = "A"
-		range_decimal_pos = 2
-
-################################
-## AC Current
-################################
-	if (mode == 0xD0F0):
-		# AC xxxx uA
-		mode_str = "AC Current"
-		units_str = "uA"
-		range_decimal_pos = 4
-
-	if (mode == 0xD1F0):
-		# AC xxx.x uA
-		mode_str = "AC Current"
-		units_str = "uA"
-		range_decimal_pos = 3
-
-	if (mode == 0xD9F0):
-		# AC xxx.x mA
-		mode_str = "AC Current"
-		units_str = "mA"
-		range_decimal_pos = 3
-
-	if (mode == 0xDAF0):
-		# AC 00.00 mA
-		mode_str = "AC Current"
-		units_str = "mA"
-		range_decimal_pos = 2
-
-	if (mode == 0xE2F0):
-		# AC xx.xx A
-		mode_str = "AC Current"
-		units_str = "A"
-		range_decimal_pos = 2
-
-################################
-## Resistance
-################################
-	if (mode == 0x21f1):
-		mode_str = "Resistance"
-		units_str = "ohms"
-		range_decimal_pos = 3
-
-	if (mode == 0x22f1):
-		# unverified
-		# Ohms xx.xx ohms
-		mode_str = "Resistance"
-		units_str = "ohm"
-		range_decimal_pos = 2
-
-	if (mode == 0x23f1):
-		# unverified
-		# Ohms x.xxx ohms
-		mode_str = "Resistance"
-		units_str = "ohm"
-		range_decimal_pos = 1
-
-
-	if (mode == 0x29F1):
-		# xxx.x kOhms
-		mode_str = "Resistance"
-		units_str = "Kohm"
-		range_decimal_pos = 3
-
-	if (mode == 0x2AF1):
-		# xx.xx kOhms
-		mode_str = "Resistance"
-		units_str = "Kohm"
-		range_decimal_pos = 2
-	
-	if (mode == 0x2BF1):
-		# ohms 0.994 kohm
-		mode_str = "Resistance"
-		units_str = "Kohms"
-		range_decimal_pos = 1
-
-
-	if (mode == 0x27f1):
-		mode_str = "Resistance"
-		units_str = "ohms"
-		range_decimal_pos = 3	
-
-	if (mode == 0x21f1):
-		mode_str = "Resistance"
-		units_str = "Kohms"
-		range_decimal_pos = 3
-
-	if (mode == 0x2ff1):
-		mode_str = "Resistance"
-		units_str = "Mohms"
-		range_decimal_pos = 3
-
-	if (mode == 0x32f1):
-		mode_str = "Resistance"
-		units_str = "Mohms"
-		range_decimal_pos = 2	
-
-	if (mode == 0x33f1):
-		# x.xxx Mohm
-		mode_str = "Resistance"
-		units_str = "Mohms"
-		range_decimal_pos = 1	
-
-
-
-	if (mode == 0x37F1):
-		# megaOhms
-		mode_str = "Resistance"
-		units_str = "Mohm"
-		range_decimal_pos = 0
-
-################################
-## Continuity
-################################
-	if (mode == 0xE7F2):
-		# OL. cont mode
-		mode_str = "Continuity"
-		units_str = "ohm"
-		range_decimal_pos = 4
-
-	if (mode == 0xE1F2):
-		# xxx.x (?) cont mode
-		mode_str = "Continuity"
-		units_str = "ohm"
-		range_decimal_pos = 3
-
-################################
-## DC Voltage
-################################
-	if (mode == 0x19f0):
-		# mV
-		mode_str = "DC Voltage"
-		units_str = "mV"
-		range_decimal_pos = 3
-
-	if (mode == 0x1AF0):
-		# DC xx.xx mV
-		mode_str = "DC Voltage"
-		units_str = "mV"
-		range_decimal_pos = 2
-
-	if (mode == 0x20F0):
-		# DC XXXX V
-		mode_str = "DC Voltage"
-		units_str = "V"
-		range_decimal_pos = 4
-
-	if (mode == 0x21F0):
-		# DC xxx.x V
-		mode_str = "DC Voltage"
-		units_str = "V"
-		range_decimal_pos = 3
-
-	if (mode == 0x22f0):
-		# DC 10 volt
-		mode_str = "DC Voltage"
-		units_str = "V"
-		range_decimal_pos = 2
-
-	if (mode == 0x23f0):
-		# DC 1 Volts
-		mode_str = "DC Voltage"
-		units_str = "V"
-		range_decimal_pos = 1
-
-################################
-## AC Voltage
-################################
-	if (mode == 0x60F0):
-		#AC xxxx V
-		mode_str = "AC Voltage"
-		units_str = "V"
-		range_decimal_pos = 4
-
-	if (mode == 0x59f0):
-		#AC xxx.x mV
-		mode_str = "AC Voltage"
-		units_str = "mV"
-		range_decimal_pos = 3
-
-	if (mode == 0x5af0):
-		#AC xx.xx mV
-		mode_str = "AC Voltage"
-		units_str = "mV"
-		range_decimal_pos = 2
-
-	if (mode == 0x61f0):
-		# AC 000.0 V
-		mode_str = "AC Voltage"
-		units_str = "V"
-		range_decimal_pos = 3
-
-	if (mode == 0x62F0):
-		# AC xx.xx V
-		mode_str = "AC Voltage"
-		units_str = "V"
-		range_decimal_pos = 2
-
-	if (mode == 0x63F0):
-		#AC x.xxxx V
-		mode_str = "AC Voltage"
-		units_str = "V"
-		range_decimal_pos = 1
-
-################################
-## Diode
-################################
-	if (mode == 0xAEF2):
-		# diode
-		units_str = "V"
-		mode_str = "Diode"
-		range_decimal_pos = 0
-
-	if (mode == 0xA3f2):
-		# diode x.xxx
-		units_str = "V"
-		mode_str = "Diode"
-		range_decimal_pos = 1
-
-	if (mode == 0xA7F2):
-		# diode .OL
-		units_str = "V"
-		mode_str = "Diode"
-		range_decimal_pos = 0
-
-################################
-## Frequency
-################################
-	if (mode == 0xA1F1):
-		# frequency xxx.x
-		mode_str = "Frequency"
-		units_str = "Hz"
-		range_decimal_pos = 3
-
-	if (mode == 0xA2F1):
-		# frequency xx.xx
-		mode_str = "Frequency"
-		units_str = "Hz"
-		range_decimal_pos = 2
-
-	if (mode == 0xA3F1):
-		# frequency x.xx
-		mode_str = "Frequency"
-		units_str = "Hz"
-		range_decimal_pos = 1
-
-
-	if (mode == 0xA9F1):
-		# frequency xxx.xx
-		mode_str = "Frequency"
-		units_str = "KHz"
-		range_decimal_pos = 3
-
-	if (mode == 0xAAF1):
-		# frequency xx.xx
-		mode_str = "Frequency"
-		units_str = "KHz"
-		range_decimal_pos = 2
-
-	if (mode == 0xABF1):
-		# frequency x.xxx
-		mode_str = "Frequency"
-		units_str = "KHz"
-		range_decimal_pos = 1
-
-
-	if (mode == 0xB1F1):
-		# unverified
-		# frequency xxx.x M
-		mode_str = "Frequency"
-		units_str = "MHz"
-		range_decimal_pos = 3
-
-	if (mode == 0xB2F1):
-		# unverified
-		# frequency xx.xx M
-		mode_str = "Frequency"
-		units_str = "MHz"
-		range_decimal_pos = 2
-
-	if (mode == 0xB3F1):
-		# frequency x.xxx M
-		mode_str = "Frequency"
-		units_str = "MHz"
-		range_decimal_pos = 1
-
-	if (mode == 0xE1F1):
-		# Frequency xxx.x %
-		mode_str = "Frequency"
-		units_str = "%"
-		range_decimal_pos = 3
-
-################################
-## Capacitor
-################################		
-	if (mode == 0x49F1):
-		# capacitor xxx.x
-		mode_str = "Capacitor"
-		units_str	 = "nF"
-		range_decimal_pos = 3
-
-	if (mode == 0x4AF1):
-		# capacitor xx.xx nF
-		mode_str = "Capacitor"
-		units_str = "nF"
-		range_decimal_pos = 2
-
-	if (mode == 0x4BF1):
-		# unverified
-		# capacitor x.xxx nF
-		mode_str = "Capacitor"
-		units_str = "nF"
-		range_decimal_pos = 1
-
-
-	if (mode == 0x51F1):
-		# capacitor xxx.x uF
-		mode_str = "Capacitor"
-		units_str = "uF"
-		range_decimal_pos = 3
-
-	if (mode == 0x52F1):
-		# capacitor xx.xx uF
-		mode_str = "Capacitor"
-		units_str = "uF"
-		range_decimal_pos = 2
-
-	if (mode == 0x53F1):
-		# capacitor x.xxx uF
-		mode_str = "Capacitor"
-		units_str = "uF"
-		range_decimal_pos = 1
-
-################################
-## Temperature
-################################
-	if (mode == 0x20F2):
-		# 0000 *C
-		mode_str = "Temperature"
-		units_str = "*C"
-		range_decimal_pos = 4
-
-	if (mode == 0x60F2):
-		# 0000 *F
-		mode_str = "Temperature"
-		units_str = "*F"
-		range_decimal_pos = 4
-
-################################
-## NCV
-################################
-	if (mode == 0x60F3):
-		# NCV EF
-		mode_str = "Non-Contact"
-		units_str = " "
-		range_decimal_pos = 4
-
-
-	
 	value = [mode, mode_str, units_str, range_decimal_pos]
 	#if (debug): print("	decode_mode: " + str(value))
 	#print("decode str: " + str(hex(mode)))
@@ -459,11 +70,11 @@ def decode_reading_into_hex(data, mode_data):
 		# check if we have a negative value and handle it with bit masking
 		# later in the code, at the negative sign
 		if (readingMSB > 0x7F): value = value & 0x7FFF
-	
+
 
 		#convert the integer to a string
 		final_value = "{:04d}".format(value)
-		
+
 		if (decimal_position < 5):
 			# only process decimal if valid, 5 isn't a valid position
 			final_value = final_value[:decimal_position] + "." + final_value[decimal_position:]
@@ -483,7 +94,7 @@ def print_DMM_packet(data):
 	if (debug): print("	Received: ", str(unpacked))
 
 	mode_desc = decode_mode_and_range(unpacked)
-	
+
 	if (debug): print("	mode_desc: " + str(mode_desc[2]))
 	readingValue = (decode_reading_into_hex(unpacked, mode_desc))
 
@@ -501,7 +112,7 @@ def print_DMM_packet(data):
 	#print(readingValue, end='')
 	#print(" ", end='')
 	#print(mode_desc[2])
-	
+
 	#print(str(hex(readingValue)) + " " + str(readingValue))
 
 
