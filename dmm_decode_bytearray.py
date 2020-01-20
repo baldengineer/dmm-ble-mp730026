@@ -2,7 +2,9 @@
 # MIT License
 # DMM Decode Byte Array
 # Module to decode the byte stream from a MP730026 DMM
-
+#
+# Heads-up, This code contains bugs
+#
 # TODO
 # Overload on resistance is probably scaled wrong
 # hard to capture values
