@@ -2,7 +2,9 @@
 # MIT License
 # DMM Decode Byte Array
 # Module to decode the byte stream from a MP730026 DMM
-
+#
+# Heads-up, This code contains bugs
+#
 # TODO
 # Overload on resistance is probably scaled wrong
 # hard to capture values
@@ -337,7 +339,7 @@ def decode_mode_and_range(data):
 		range_decimal_pos = 1
 
 
-	if (mode == 0xB13F1):
+	if (mode == 0xB1F1):
 		# unverified
 		# frequency xxx.x M
 		mode_str = "Frequency"
