@@ -1,6 +1,6 @@
 # Created by james lewis (baldengineer) 2020-01
 # MIT License
-# DMM Decode Byte Array
+# MP730026 Decode Byte Array
 # Module to decode the byte stream from a MP730026 DMM
 #
 # Heads-up, This code contains bugs
@@ -11,7 +11,7 @@
 
 import struct
 import numpy as np
-from values import values, mode_strings, unit_strings
+from mp730026_value_table import values, mode_strings, unit_strings
 
 debug = False
 

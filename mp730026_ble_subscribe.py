@@ -1,27 +1,27 @@
 #!/usr/bin/python
 
-# Created by james lewis (baldengineer)
+# Modified by james lewis (@baldengineer)
 # MIT License
-# Bleak_Service_Subscribe (TODO: Rename)
+# 2020
 # Script to connect to Multicomp Pro MP730026 by BLE with the Bleak Module
+# Based on bleak example
+# Requires mpp730026_decode_bytearray.py to be in the same directory
 
 import logging
 import asyncio
 import platform
-from dmm_decode_bytearray import print_DMM_packet
+from mp730026_decode_bytearray import print_DMM_packet
 
 from bleak import BleakClient
 from bleak import _logger as logger
 
-#CHARACTERISTIC_UUID = "00001800-0000-1000-8000-00805f9b34fb" #Generic Access Profile
-#CHARACTERISTIC_UUID = "00001801-0000-1000-8000-00805f9b34fb" #Generic Attribute Profile
-#CHARACTERISTIC_UUID = "0000180a-0000-1000-8000-00805f9b34fb" #Device Information
-#CHARACTERISTIC_UUID = "0000fff0-0000-1000-8000-00805f9b34fb" #Vendor specific
-#CHARACTERISTIC_UUID = "00010203-0405-0607-0809-0a0b0c0d1911" #Unknown
- 
+# Change this to your meter's address
+address = ("A5:B3:C2:24:15:16") # for Windows and Linux
+#address = ("4DA7C422-D3DE-4AE5-AF14-CFEBDD3B85D1") # for macOS
 
+# This characteristic UUID is for the BDM / MP730026 BLE message
+# (do not change this)
 CHARACTERISTIC_UUID = "0000fff4-0000-1000-8000-00805f9b34fb"
-
 
 def notification_handler(sender, data, debug=False):
     """Simple notification handler which prints the data received."""
@@ -40,7 +40,7 @@ def notification_handler(sender, data, debug=False):
     if (debug): print("... done handling")
     print_DMM_packet(array)
 
-async def run(address, loop, debug=True):
+async def run(address, loop, debug=False):
     if debug:
         import sys
 
@@ -57,7 +57,7 @@ async def run(address, loop, debug=True):
         logger.info("Connected: {0}".format(x))
 
         await client.start_notify(CHARACTERISTIC_UUID, notification_handler)
-        await asyncio.sleep(20.0, loop=loop)
+        await asyncio.sleep(460.0, loop=loop)
         await client.stop_notify(CHARACTERISTIC_UUID)
 
 
@@ -65,10 +65,6 @@ if __name__ == "__main__":
     import os
 
     os.environ["PYTHONASYNCIODEBUG"] = str(1)
-    address = (
-        "A5:B3:C2:22:14:D2"  # <--- Change to your device's address here if you are using Windows or Linux
-       # if platform.system() != "Darwin"
-       # else "243E23AE-4A99-406C-B317-18F1BD7B4CBE"  # <--- Change to your device's address here if you are using macOS
-    )
+
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run(address, loop, False))
