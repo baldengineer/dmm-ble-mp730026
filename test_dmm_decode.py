@@ -3,9 +3,9 @@
 # Created by james lewis (baldengineer) 2020-01
 # MIT License
 # test_dmm_decode
-# Script to test the decoder dmm_decode_bytearray.py
+# Script to test the decoder mp730026_decode_bytearray.py
 
-from dmm_decode_bytearray import print_DMM_packet
+from mp730026_decode_bytearray import print_DMM_packet
 
 debug = False
 

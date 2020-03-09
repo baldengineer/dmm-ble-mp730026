@@ -1,6 +1,7 @@
 # Created by james lewis (baldengineer) 2020-01
 # MIT License
 # DMM Decode Byte Array
+# Dictionaries of strings for the decoded values
 
 #Establish dictionary of strings
 mode_strings = dict(
