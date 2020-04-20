@@ -5,12 +5,20 @@
     </head>
     <body>
         <h1><p id="reading">Hello!</p></h1>
-        <script>
-            var ws = new WebSocket("ws://127.0.0.1:5678/"),
-                messages = document.createElement('p');
-            ws.onmessage = function (event) {
-                var messages = document.getElementById("reading").innerHTML = event.data;
-            };
+        <script>            
+            function start(websocketServerLocation){
+                ws = new WebSocket(websocketServerLocation);
+                ws.onmessage = function (event) {
+                    var messages = document.getElementById("reading").innerHTML = event.data;
+                };
+                ws.onclose = function(){
+                    // Try to reconnect in 5 seconds
+                    document.getElementById("reading").innerHTML = "Connecting...";
+                    setTimeout(function(){start(websocketServerLocation)}, 5000);
+                };
+            }    
+
+            start("ws://127.0.0.1:5678/")
         </script>
     </body>
 </html>
