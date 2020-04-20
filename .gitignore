@@ -4,4 +4,7 @@ __pycache__/
 *$py.class
 
 # Python VirtualEnv
-.venv
+.venv/
+
+# VSCode
+.vscode/
