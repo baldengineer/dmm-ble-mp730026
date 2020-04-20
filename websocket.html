@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WebSocket demo</title>
+    </head>
+    <body>
+        <h1><p id="reading">Hello!</p></h1>
+        <script>
+            var ws = new WebSocket("ws://127.0.0.1:5678/"),
+                messages = document.createElement('p');
+            ws.onmessage = function (event) {
+                var messages = document.getElementById("reading").innerHTML = event.data;
+            };
+        </script>
+    </body>
+</html>
