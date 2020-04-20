@@ -1,2 +1,3 @@
 numpy
 bleak
+websockets

@@ -6,6 +6,7 @@
 # Script to test the decoder mp730026_decode_bytearray.py
 
 from mp730026_decode_bytearray import print_DMM_packet
+import asyncio
 
 debug = False
 
@@ -19,10 +20,14 @@ debug = False
 
 exampleArray = [[0x23, 0xF0, 0x04, 0x00, 0xDE, 0x85], [0x21, 0xF1, 0x04, 0x00, 0x34, 0x02],[0x23, 0xF0, 0x04, 0x00, 0xE6, 0x0C],[0x22, 0xF0, 0x04, 0x00, 0x7E, 0x04],[0x19, 0xF0, 0x04, 0x00, 0x41, 0x14]]
 
-for exampleData in exampleArray:
-	incomingData = bytearray(exampleData) 
-	if (debug): print("incomingData = " + str(incomingData))
+async def main():
+	for exampleData in exampleArray:
+		incomingData = bytearray(exampleData) 
+		if (debug): print("incomingData = " + str(incomingData))
 
-	print_DMM_packet(incomingData)
+		await print_DMM_packet(incomingData)
 
-
+if __name__ == "__main__":
+	loop = asyncio.get_event_loop()
+	task = loop.create_task(main())
+	loop.run_until_complete(task)

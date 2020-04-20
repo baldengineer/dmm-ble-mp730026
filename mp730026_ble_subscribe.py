@@ -38,7 +38,7 @@ def notification_handler(sender, data, debug=False):
             print(hex(arr))
         print("")
     if (debug): print("... done handling")
-    print_DMM_packet(array)
+    await print_DMM_packet(array)
 
 async def run(address, loop, debug=False):
     if debug:

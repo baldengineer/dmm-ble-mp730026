@@ -86,7 +86,7 @@ def decode_reading_into_hex(data, mode_data):
 
 	return final_value
 
-def print_DMM_packet(data):
+async def print_DMM_packet(data):
 	#turns the bytearray into tuples, so it is easier to work wh
 	unpacked = struct.unpack('>HHBB', data)
 
