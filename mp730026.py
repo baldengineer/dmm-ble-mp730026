@@ -5,7 +5,7 @@
 # Module to decode and manages instances of a BLE DMM mp730026
 import struct
 import numpy as np
-#from bleak import BleakClient
+from bleak import BleakClient
 from bleak import _logger as logger
 import asyncio
 
@@ -60,6 +60,7 @@ class DMM:
         #		print("Unknown: " + str(hex(mode)))
 
         # return an int and a string
+       
         return value
         
     def __decode_reading_into_hex(self,data, mode_data):
@@ -94,60 +95,38 @@ class DMM:
     
         return final_value
         
-    def print_DMM_packet(self,data):
-        #turns the bytearray into tuples, so it is easier to work wh
-        unpacked = struct.unpack('>HHBB', data)
-    
-        # show what the raw values were, in decimal
-        if (debug): print("	Received: ", str(unpacked))
-    
-        mode_desc = decode_mode_and_range(unpacked)
-        self.mode = mode_desc[1]
-        self.suffix = mode_desc[2]
-        self.decimal = mode_desc[3]
+    async def print_DMM(self):
+        ''' Print state to STDOUT '''
         
-        if (debug): print("	mode_desc: " + str(mode_desc[2]))
-        readingValue = (decode_reading_into_hex(unpacked, mode_desc))
-    
-        string_to_print = "Reading [" + mode_desc[1] + "]: " + readingValue + " " + mode_desc[2]
+        if (debug): print("	mode_desc: " + self.mode)
+        string_to_print = "Reading [{}]: {} {}".format(self.mode,self.value,self.suffix)
     
         # is hold on?
-        #hold_and_rel = decode_hold_and_rel(unpacked)
-        if (decode_hold_and_rel(unpacked)[0] == True): string_to_print = string_to_print + ", HOLD"
-        if (decode_hold_and_rel(unpacked)[1] == True): string_to_print = string_to_print + ", REL"
+        if (self.hold): string_to_print = string_to_print + ", HOLD"
+        if (self.rel): string_to_print = string_to_print + ", REL"
         print(string_to_print)
         return string_to_print
-        #print("Reading [", end='')
-        #print(mode_desc[1], end='')
-        #print("]: ", end='')
-        #print(readingValue, end='')
-        #print(" ", end='')
-        #print(mode_desc[2])
-    
-        #print(str(hex(readingValue)) + " " + str(readingValue))
-       
-       
-    def parse(self,data):
+
+    async def parse(self,data):
         ''' Update Instance with new data'''
         unpacked = struct.unpack('>HHBB', data)
     
         # show what the raw values were, in decimal
         if (debug): print("	Received: ", str(unpacked))
     
-        self.mode = decode_mode_and_range(unpacked)
+        mode_range = self.__decode_mode_and_range(unpacked)
+        self.hex,self.mode,self.suffix,self.decimal = mode_range
     
         if (debug): print("	mode_desc: " + str(mode_desc[2]))
-        readingValue = (decode_reading_into_hex(unpacked, mode_desc))
-    
-        string_to_print = "Reading [" + mode_desc[1] + "]: " + readingValue + " " + mode_desc[2]
+        self.value = (self.__decode_reading_into_hex(unpacked,mode_range))
     
         #is hold on?
         #hold_and_rel = decode_hold_and_rel(unpacked)
-        self.hold,self.rel = __decode_hold_and_rel(unpacked)
+        self.hold,self.rel = self.__decode_hold_and_rel(unpacked)
         
 
         
-    async def notification_handler(self,sender, data, debug=False):
+    async def __notification_handler(self,sender, data, debug=False):
         print("Test")
         print(data)
         await self.websocket.send("a a -485.4 mV")
@@ -156,13 +135,12 @@ class DMM:
         
         
         
-    async def serve(self,websocket):
+    async def serve_websocket(self,websocket):
         self.websocket = websocket
         async with BleakClient(address, loop=loop) as client:
             x = await client.is_connected()
             logger.info("Connected: {0}".format(x))
-
-            await client.start_notify(CHARACTERISTIC_UUID, notification_handler)
+            await client.start_notify(CHARACTERISTIC_UUID, __notification_handler)
             while(client.is_connected()):
                 pass 
         #maybe i want to loop reading read_gatt_char

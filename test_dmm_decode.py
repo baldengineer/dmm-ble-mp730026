@@ -5,11 +5,12 @@
 # test_dmm_decode
 # Script to test the decoder mp730026_decode_bytearray.py
 
-from mp730026_decode_bytearray import print_DMM_packet
+from mp730026 import DMM
 import asyncio
-import websockets
+
 
 debug = False
+BLEDMM = DMM("TESTMAC")
 
 # need to recreate the data we get from bleak
 # real bleak-base code does not need this step
@@ -27,23 +28,22 @@ exampleArray = [
     [0x19, 0xF0, 0x04, 0x00, 0x41, 0x14],
 ]
 
-
-async def main(websocket,path):
+async def test():
     for _ in range(5):
         for exampleData in exampleArray:
             incomingData = bytearray(exampleData)
             if debug:
                 print("incomingData = " + str(incomingData))
-
-            await websocket.send(await print_DMM_packet(incomingData))
+            await BLEDMM.parse(incomingData)
+            await BLEDMM.print_DMM()
             await asyncio.sleep(1)
 
 
 if __name__ == "__main__":
+    
     try:
-        server_loop = websockets.serve(main, "127.0.0.1", 18881)
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(server_loop)
+        loop.run_until_complete(test())
         loop.run_forever()
 
     except KeyboardInterrupt:
