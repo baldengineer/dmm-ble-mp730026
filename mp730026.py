@@ -110,31 +110,25 @@ class DMM:
     async def parse(self,data):
         ''' Update Instance with new data'''
         unpacked = struct.unpack('>HHBB', data)
-    
+
         # show what the raw values were, in decimal
         if (debug): print("	Received: ", str(unpacked))
-    
+
         mode_range = self.__decode_mode_and_range(unpacked)
         self.hex,self.mode,self.suffix,self.decimal = mode_range
-    
+
         if (debug): print("	mode_desc: " + str(mode_desc[2]))
         self.value = (self.__decode_reading_into_hex(unpacked,mode_range))
-    
+
         #is hold on?
         #hold_and_rel = decode_hold_and_rel(unpacked)
         self.hold,self.rel = self.__decode_hold_and_rel(unpacked)
-        
 
-        
     async def __notification_handler(self,sender, data, debug=False):
         print("Test")
         print(data)
         await self.websocket.send("a a -485.4 mV")
-        
-        
-        
-        
-        
+
     async def serve_websocket(self,websocket):
         self.websocket = websocket
         async with BleakClient(address, loop=loop) as client:

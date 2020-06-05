@@ -12,3 +12,4 @@ __pycache__/
 #node js cache
 web/node_modules/
 web/package-lock.json
+web/dmm.js

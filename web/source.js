@@ -73,16 +73,58 @@
         const ReconnectingWebSocket = require('reconnecting-websocket'),
             params = getAllUrlParams(),
             canvas = document.getElementById('display'),
+            topcanvas = document.getElementById('top'),
+            bottomcanvas = document.getElementById('bottom'),
             ctx = canvas.getContext('2d'),
+            topctx = topcanvas.getContext('2d'),
+            bottomctx = bottomcanvas.getContext('2d'),
             socket = new ReconnectingWebSocket('ws://' + params.websocketserver + ':' + params.websockport);
+
         var heartbeatInterval = null,
             missedHeartbeats = 0,
             ginputdelay = 0,
-            display = new SegmentDisplay("display")
+            display = new SegmentDisplay("display"),
+            backgroundColor = params.background,
+            onColor = params.oncolor,
+            offColor = params.offcolor;
             
+        if(!onColor){
+            onColor = "#24dd22";
+        }
+        if(!offColor){
+            offColor = "#1F4905";
+        }
+        if(!backgroundColor){
+            backgroundColor = "Black";
+        }
+        
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawStrokeText(ctx, 'Waiting for Meter', canvas.width / 2, canvas.height / 2, canvas.width);
-
+        display.displayAngle    = 5;
+        display.digitHeight     = 20;
+        display.digitWidth      = 15;
+        display.digitDistance   = 2.5;
+        display.segmentWidth    = 2;
+        display.segmentDistance = 0.5;
+        display.segmentCount    = 14;
+        display.cornerType      = 3;
+        display.colorOn         = onColor;
+        display.colorOff        = offColor;
+        display.pattern         = "##.#######";
+        display.draw();
+        display.setValue("-1.502  kΩ");
+        canvas.style.background = backgroundColor;
+        topcanvas.style.background = backgroundColor;
+        bottomcanvas.style.background = backgroundColor;
+        bottomctx.font = "italic bold 14pt Arial";
+        bottomctx.fillStyle = display.colorOn;
+        bottomctx.fillText("MP730026 BLE DMM",62,18);
+        
+        topctx.font = "bold 16pt Arial";
+        topctx.fillStyle = display.colorOn;
+        
+        topctx.fillText("HOLD",61,18);
+        topctx.fillStyle = display.colorOff;
+        topctx.fillText("REL",190,18);
         socket.onopen = (event) => {
             console.log('Connected to: ' + event.currentTarget.url);
         };
@@ -115,22 +157,11 @@
             
             //Add additional Spots for Suffix
             display.pattern = pattern + "###";
-            display.displayAngle    = 5;
-            display.digitHeight     = 20;
-            display.digitWidth      = 15;
-            display.digitDistance   = 2.5;
-            display.segmentWidth    = 2;
-            display.segmentDistance = 0.1;
-            display.segmentCount    = 14;
-            display.cornerType      = 3;
-            display.colorOn         = "#24dd22";
-            display.colorOff        = "#112903";
             display.draw();
             display.setValue(value.padStart(9," "));
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawStrokeText(ctx, patternMatch[3]+patternMatch[4], canvas.width / 2, canvas.height / 2, canvas.width);
-            console.log(pattern);
             
+            console.log(pattern);
+           
             
             
         };

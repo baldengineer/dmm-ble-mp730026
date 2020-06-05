@@ -8,10 +8,18 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
 </head>
-<body >
-<canvas style="background: black" id="display" width="300" height="40"
+<body  >
+<div>
+<canvas style="display: block;border: 2px solid #000000;border-bottom: 0px;" id="top" width="300" height="20">
     Your browser does not support the canvas element.
 </canvas>
+<canvas style="display: block;border: 2px solid #000000;border-top: 0px;border-bottom: 0px" id="display" width="300" height="40">
+    Your browser does not support the canvas element.
+</canvas>
+<canvas style="display: block;border: 2px solid #000000;border-top: 0px" id="bottom" width="300" height="20">
+    Your browser does not support the canvas element.
+</canvas>
+</div>
 </body>
 </html>
 
