@@ -3,26 +3,49 @@
 # Created by james lewis (baldengineer) 2020-01
 # MIT License
 # test_dmm_decode
-# Script to test the decoder dmm_decode_bytearray.py
+# Script to test the decoder mp730026_decode_bytearray.py
 
-from dmm_decode_bytearray import print_DMM_packet
+from mp730026_decode_bytearray import print_DMM_packet
+import asyncio
+import websockets
 
 debug = False
 
 # need to recreate the data we get from bleak
 # real bleak-base code does not need this step
-#exampleData = [0x23, 0xF0, 0x04, 0x00, 0xDE, 0x85] # DC volts, -1.502 (Negative!!)
-#exampleData = [0x21, 0xF1, 0x04, 0x00, 0x34, 0x02] # Ohms, 056.4
-#exampleData = [0x23, 0xF0, 0x04, 0x00, 0xE6, 0x0C] # DC Volts, 3.302
-#exampleData = [0x22, 0xF0, 0x04, 0x00, 0x7E, 0x04] # DC Volts, 11.50
-#exampleData = [0x19, 0xF0, 0x04, 0x00, 0x41, 0x14] # mV, 518.5 mV
+# exampleData = [0x23, 0xF0, 0x04, 0x00, 0xDE, 0x85] # DC volts, -1.502 (Negative!!)
+# exampleData = [0x21, 0xF1, 0x04, 0x00, 0x34, 0x02] # Ohms, 056.4
+# exampleData = [0x23, 0xF0, 0x04, 0x00, 0xE6, 0x0C] # DC Volts, 3.302
+# exampleData = [0x22, 0xF0, 0x04, 0x00, 0x7E, 0x04] # DC Volts, 11.50
+# exampleData = [0x19, 0xF0, 0x04, 0x00, 0x41, 0x14] # mV, 518.5 mV
 
-exampleArray = [[0x23, 0xF0, 0x04, 0x00, 0xDE, 0x85], [0x21, 0xF1, 0x04, 0x00, 0x34, 0x02],[0x23, 0xF0, 0x04, 0x00, 0xE6, 0x0C],[0x22, 0xF0, 0x04, 0x00, 0x7E, 0x04],[0x19, 0xF0, 0x04, 0x00, 0x41, 0x14]]
+exampleArray = [
+    [0x23, 0xF0, 0x04, 0x00, 0xDE, 0x85],
+    [0x21, 0xF1, 0x04, 0x00, 0x34, 0x02],
+    [0x23, 0xF0, 0x04, 0x00, 0xE6, 0x0C],
+    [0x22, 0xF0, 0x04, 0x00, 0x7E, 0x04],
+    [0x19, 0xF0, 0x04, 0x00, 0x41, 0x14],
+]
 
-for exampleData in exampleArray:
-	incomingData = bytearray(exampleData) 
-	if (debug): print("incomingData = " + str(incomingData))
 
-	print_DMM_packet(incomingData)
+async def main(websocket,path):
+    for _ in range(5):
+        for exampleData in exampleArray:
+            incomingData = bytearray(exampleData)
+            if debug:
+                print("incomingData = " + str(incomingData))
+
+            await websocket.send(await print_DMM_packet(incomingData))
+            await asyncio.sleep(1)
 
 
+if __name__ == "__main__":
+    try:
+        server_loop = websockets.serve(main, "127.0.0.1", 18881)
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(server_loop)
+        loop.run_forever()
+
+    except KeyboardInterrupt:
+        print("Exiting...")
+        exit()
