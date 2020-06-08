@@ -99,7 +99,8 @@
             char4 = new SegmentDisplay("display4"),
             backgroundColor = params.background,
             onColor = params.oncolor,
-            offColor = params.offcolor;
+            offColor = params.offcolor,
+            display_string = params.displaytxt;
             
         if(!onColor){
             onColor = "#24dd22";
@@ -110,7 +111,9 @@
         if(!backgroundColor){
             backgroundColor = "Black";
         }
-        
+        if(!display_string){
+            display_string = "MP730026 BLE DMM"
+        }
         
         char1.displayAngle    = 5;
         char1.digitHeight     = 20;
@@ -168,7 +171,8 @@
         
         bottomctx.font = "italic bold 14pt Arial";
         bottomctx.fillStyle = onColor;
-        bottomctx.fillText("MP730026 BLE DMM",37,15);
+        bottomctx.textAlign = "center"; 
+        bottomctx.fillText(unescape(display_string),bottomcanvas.width/2,bottomcanvas.height-4,250);
         char1.setValue("");
         char2.setValue("");
         char3.setValue("");
