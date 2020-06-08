@@ -26,7 +26,7 @@ class DMM:
         self.mode = False
         self.hold = False
         self.rel = False
-        self.value = "Loading..."
+        self.value = False
         self.suffix = False
         self.decimal = False
         self.negative = False
@@ -180,7 +180,12 @@ class DMM:
                 while await client.is_connected():
                     pass
 
-                self.value = "Disconnected"
+                self.value = False
+                self.autorange = False
+                self.hold = False
+                self.rel = False
+                self.decimal = False
+                self.suffix = False
                 del client
 
             except exc.BleakError:
