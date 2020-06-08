@@ -56,7 +56,23 @@ negative = False
 autorange = False
 ```
 
-## Accessing
+
+
+
+
+# Included Example
+
+Included is an example for connecting a meter to a web-socket for sending the data across the internet, In this case to a web page to show off the multimeter reading in real time. 
+
+executing: 
+
+```
+run.py
+```
+
+Will start up the websocket and bluetooth services for getting data from the meter.
+
+### Accessing
 
 Opening index.html either locally or hosted with the following flags
 
@@ -95,7 +111,22 @@ Color of the brighter foreground elements
 - /index.html?websocketserver=127.0.0.1&websockport=18881&background=black&onColor=Lime&offColor=DarkGreen
 
 
-## Raspberry Pi specifics
+
+### OBS Browser Source
+
+This was actually designed to be used with OBS as a browser source. The url you generated above goes in URL
+
+height and width are as follows
+
+```
+width = 250
+height = 85
+```
+
+All other defaults are fine. 
+
+
+### Raspberry Pi specifics
 
 Permissions for the Pi user to access bluetooth are needed
 
@@ -105,7 +136,7 @@ sudo adduser pi bluetooth
 
 Also you will need to modify a file according to [this post](https://www.raspberrypi.org/forums/viewtopic.php?p=746917&sid=d3eb670e77ee7fb900499168b1bc83d7#p746917)
 
-## Hosting
+### Hosting
 
 The html interface can be locally provided to a web browser or OBS source. However if one desires to host it remotely a nginx file has been provided.
 
