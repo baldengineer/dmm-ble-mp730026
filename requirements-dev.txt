@@ -1,0 +1,6 @@
+asyncio
+pylint
+black
+numpy
+bleak
+websockets

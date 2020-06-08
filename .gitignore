@@ -2,3 +2,13 @@
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Python VirtualEnv
+.venv/
+
+# VSCode
+.vscode/
+
+#node js cache
+web/node_modules/
+web/dmm.js
