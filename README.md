@@ -1,4 +1,5 @@
 # dmm-ble-mp730026
+
  # About
 
 Python code to access the a Multicomp Pro MP730026 DMM over BLE
@@ -51,12 +52,46 @@ decimal = 1
 negative = False
 ```
 
+## Accessing
+
+Opening index.html either locally or hosted with the following flags
+
+###### websocketserver *required
+
+IP Address or Host name of server, eg 127.0.0.1, 192,168.1.100, raspberrypi
+
+###### websocketport *required
+
+Web socket port, default is 18881
+
+###### background
+
+RGB syntax or [HTML color names](https://htmlcolorcodes.com/color-names/), grey, salmon, green, etc...
+
+###### oncolor
+
+Color of the darker background elements of the display
+
+###### offcolor
+
+Color of the brighter foreground elements
+
+
+
+##### Examples
+
+- /index.html?websocketserver=127.0.0.1&websockport=18881&background=grey&onColor=black&offColor=dimgrey
+- /index.html?websocketserver=127.0.0.1&websockport=18881&background=black&onColor=Lime&offColor=DarkGreen
+
+
 ## Raspberry Pi specifics
 
 Permissions for the Pi user to access bluetooth are needed
+
 ```bash
 sudo adduser pi bluetooth
 ```
+
 Also you will need to modify a file according to [this post](https://www.raspberrypi.org/forums/viewtopic.php?p=746917&sid=d3eb670e77ee7fb900499168b1bc83d7#p746917)
 
 ## Hosting
@@ -64,14 +99,9 @@ Also you will need to modify a file according to [this post](https://www.raspber
 A nginx file has been provided to host the page if desired
 
 Install Nginx and link file
+
 ```bash
 sudo apt-get install nginx
 sudo rm /etc/nginx/sites-available/default # Warning: This will remove the default nginx page
 ln ~/dmm-ble-mp730026/nginx-site /etc/nginx/sites-available/default
 ```
-
-
-
-
-
-
