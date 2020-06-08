@@ -181,7 +181,7 @@
             socket.close();
         };
         socket.onmessage = (event) => {
-            console.log(event.data);
+            // console.log(event.data);
             let dataReg = /(.*) (.*) (.*) (.*)/,
                 patternReg = /[\-0-9]/g,
                 zeroReg = /(?<![\.1-9])0(?!$)/g,
