@@ -16,6 +16,8 @@ The intent for the code is to provide a decoded string from the DMM and to act a
 
 decoding dmm maybe.txt are messages from my meter along with descriptions of what the screen showed.
 
+bleak_scan.py can be used to find the MAC address of your meter.
+
 
 
 ##  Usage
