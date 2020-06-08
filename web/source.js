@@ -276,6 +276,12 @@
                     char3ctx.fillStyle = char1.colorOff;
                     char4ctx.fillStyle = char1.colorOn;
                     break;
+                default:
+                    char1ctx.fillStyle = char1.colorOff;
+                    char2ctx.fillStyle = char1.colorOff;
+                    char3ctx.fillStyle = char1.colorOff;
+                    char4ctx.fillStyle = char1.colorOff;
+                   
             }
                     char1ctx.fillRect(35,35,3,5);
                     char2ctx.fillRect(35,35,3,5);
