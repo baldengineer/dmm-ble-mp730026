@@ -30,22 +30,29 @@ class DMM:
         self.suffix = False
         self.decimal = False
         self.negative = False
+        self.autorange = False
 
     def __decode_hold_and_rel(self, data):
         rel_indicator_state = False
         hold_indicator_state = False
+        auto_range_indicator_state = False
         indicators = data[1]
 
         # probably a better way to do this with masking, but don't wanna
         if indicators == 256:
             hold_indicator_state = True
-        if indicators == 512:
+        elif indicators == 512:
             rel_indicator_state = True
-        if indicators == 768:
+        elif indicators == 768:
             hold_indicator_state = True
             rel_indicator_state = True
+        elif indicators == 1024:
+            auto_range_indicator_state = True
+        elif indicators == 1280:
+            auto_range_indicator_state = True
+            hold_indicator_state = True
 
-        return [hold_indicator_state, rel_indicator_state]
+        return [hold_indicator_state, rel_indicator_state, auto_range_indicator_state]
 
     def __decode_mode_and_range(self, data):
         mode = data[0]
@@ -145,7 +152,7 @@ class DMM:
 
         # is hold on?
         # hold_and_rel = decode_hold_and_rel(unpacked)
-        self.hold, self.rel = self.__decode_hold_and_rel(unpacked)
+        self.hold, self.rel, self.autorange = self.__decode_hold_and_rel(unpacked)
 
     def __notification_handler(self, sender, data, debug=False):
         self.parse(data)

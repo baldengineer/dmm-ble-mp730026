@@ -21,6 +21,7 @@ def get_json(meter):
         "suffix": meter.suffix,
         "decimal": meter.decimal,
         "negative": meter.negative,
+        "autorange": meter.autorange,
     }
 
     return json.dumps(values)

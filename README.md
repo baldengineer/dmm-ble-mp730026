@@ -25,14 +25,15 @@ This library exposes a DMM object that exposes all the data for a mp730026 multi
 
 
 ```python
-  self.MAC = MAC        # Devices MAC address
-  self.mode = False     # Current measurement Mode. EG AC voltage
-  self.hold = False     # hold Flag
-  self.rel = False      # rel Flag
-  self.value = False    # String containing 4 digit and one decimal Value
-  self.suffix = False   # String of data suffix. EG mV KΩ
-  self.decimal = False  # Decimal Position
-  self.negative = False # If the number is a negative value
+  self.MAC = MAC         # Devices MAC address
+  self.mode = False      # Current measurement Mode. EG AC voltage
+  self.hold = False      # hold Flag
+  self.rel = False       # rel Flag
+  self.value = False     # String containing 4 digit and one decimal Value
+  self.suffix = False    # String of data suffix. EG mV KΩ
+  self.decimal = False   # Decimal Position
+  self.negative = False  # If the number is a negative value
+  self.autorange = False # Auto-range flag
 ```
 
 
@@ -50,6 +51,7 @@ value = -1.502
 suffix = "V"
 decimal = 1
 negative = False
+autorange = False
 ```
 
 ## Accessing
