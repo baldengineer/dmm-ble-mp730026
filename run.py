@@ -5,6 +5,8 @@ import datetime
 
 from mp730026 import DMM
 
+# from demo_meter import DMM as DMM2
+
 # Set the MAC address of the MP730026 meter here.
 MAC = "A5:B3:C2:25:15:0D"
 
@@ -34,8 +36,13 @@ def get_json(meter):
 async def send_websocket(websocket, path):
     """Sends meter data to the websocket when connected"""
     while True:
+
         # Grab a json object of the current data
+        # if path == "/test":
+        #     data = get_json(TESTDMM)
+        # else:
         data = get_json(BLEDMM)
+
         try:
             # Send it to the web socket
             await websocket.send(data)
@@ -54,6 +61,7 @@ print("Ready to connect to the meter...")
 
 # Create the  mp730026 object
 BLEDMM = DMM(MAC)
+# TESTDMM = DMM2("00:00:00:00:00:00")
 
 # Setup our websocket loop
 websocket_loop = websockets.serve(send_websocket, "0.0.0.0", 18881)
@@ -62,10 +70,14 @@ websocket_loop = websockets.serve(send_websocket, "0.0.0.0", 18881)
 loop = asyncio.get_event_loop()
 
 # Setup our meter loop
-ble_loop = BLEDMM.run()
+ble_loops = [BLEDMM.run()]  # , TESTDMM.run()]
 
 # Run all of our loops
 loop.run_until_complete(websocket_loop)
-loop.run_until_complete(ble_loop)
+
+for bl in ble_loops:
+    loop.create_task(bl)
+
+
 # forever
 loop.run_forever()
