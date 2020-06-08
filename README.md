@@ -51,7 +51,16 @@ decimal = 1
 negative = False
 ```
 
+## Raspberry Pi specifics
+
+Permissions for the Pi user to access bluetooth are needed
+```bash
+sudo adduser pi bluetooth
+```
+Also you will need to modify a file according to [this post](https://www.raspberrypi.org/forums/viewtopic.php?p=746917&sid=d3eb670e77ee7fb900499168b1bc83d7#p746917)
+
 ## Hosting
+
 A nginx file has been provided to host the page if desired
 
 Install Nginx and link file
