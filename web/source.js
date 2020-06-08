@@ -250,20 +250,34 @@
 
             switch (DMM.decimal){
                 case 1:
-                    char1ctx.fillRect(35,35,3,5);
+                    char1ctx.fillStyle = char1.colorOn;
+                    char2ctx.fillStyle = char1.colorOff;
+                    char3ctx.fillStyle = char1.colorOff;
+                    char4ctx.fillStyle = char1.colorOff;
                     break;
                 case 2:
-                    char2ctx.fillRect(35,35,3,5);
+                    char1ctx.fillStyle = char1.colorOff;
+                    char2ctx.fillStyle = char1.colorOn;
+                    char3ctx.fillStyle = char1.colorOff;
+                    char4ctx.fillStyle = char1.colorOff;
                     break;
                 case 3:
-                    char3ctx.fillRect(35,35,3,5);
+                    char1ctx.fillStyle = char1.colorOff;
+                    char2ctx.fillStyle = char1.colorOff;
+                    char3ctx.fillStyle = char1.colorOn;
+                    char4ctx.fillStyle = char1.colorOff;
                     break;
                 case 4:
-                    char4ctx.fillRect(35,35,3,5);
+                    char1ctx.fillStyle = char1.colorOff;
+                    char2ctx.fillStyle = char1.colorOff;
+                    char3ctx.fillStyle = char1.colorOff;
+                    char4ctx.fillStyle = char1.colorOn;
                     break;
-
             }
-            console.log(pattern);
+                    char1ctx.fillRect(35,35,3,5);
+                    char2ctx.fillRect(35,35,3,5);
+                    char3ctx.fillRect(35,35,3,5);
+                    char4ctx.fillRect(35,35,3,5);
         };
     };
 })();

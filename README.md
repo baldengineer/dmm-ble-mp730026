@@ -12,7 +12,7 @@ Using [the bleak python module](https://github.com/hbldh/bleak), virtually any o
 * Windows 10: Microsoft Surface Book Pro 2
 * Linux: Raspberry Pi 3B
 
-The intent for the code is to provide a decoded string from the DMM and to act as an API pass-through for other applications.
+The intent for the code is to provide an object representing the DMM. 
 
 decoding dmm maybe.txt are messages from my meter along with descriptions of what the screen showed.
 
@@ -70,7 +70,14 @@ Web socket port, default is 18881
 
 ###### background
 
-RGB syntax or [HTML color names](https://htmlcolorcodes.com/color-names/), grey, salmon, green, etc...
+RGB syntax or [HTML color names](https://htmlcolorcodes.com/color-names/),
+
+```
+rgb(250,128,114)
+salmon
+```
+
+
 
 ###### oncolor
 
@@ -100,7 +107,7 @@ Also you will need to modify a file according to [this post](https://www.raspber
 
 ## Hosting
 
-A nginx file has been provided to host the page if desired
+The html interface can be locally provided to a web browser or OBS source. However if one desires to host it remotely a nginx file has been provided.
 
 Install Nginx and link file
 
