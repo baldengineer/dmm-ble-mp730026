@@ -1,6 +1,7 @@
 import websockets
 import asyncio
 import json
+import datetime
 
 from mp730026 import DMM
 
@@ -29,7 +30,11 @@ async def send_websocket(websocket, path):
     # await BLEDMM.serve_websocket(websocket)
     while True:
         data = get_json(BLEDMM)
-        await websocket.send(data)
+        try:
+            await websocket.send(data)
+        except websockets.exceptions.ConnectionClosedOK:
+            print("Connection closed.")
+
         print(data)
         await asyncio.sleep(0.25)
 
