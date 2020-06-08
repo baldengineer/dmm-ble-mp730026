@@ -1,12 +1,35 @@
 import websockets
 import asyncio
+import json
+
 from mp730026 import DMM
+
+
+def get_json(meter):
+    """
+    Takes a DMM object and returns the values as a dictionary
+    """
+
+    values = {
+        "MAC": meter.MAC,
+        "mode": meter.mode,
+        "hold": meter.hold,
+        "rel": meter.rel,
+        "value": meter.value,
+        "suffix": meter.suffix,
+        "decimal": meter.decimal,
+        "negative": meter.negative,
+    }
+
+    return json.dumps(values)
 
 
 async def send_websocket(websocket, path):
     # await BLEDMM.serve_websocket(websocket)
     while True:
-        await websocket.send(BLEDMM.print_DMM())
+        data = get_json(BLEDMM)
+        await websocket.send(data)
+        print(data)
         await asyncio.sleep(0.25)
 
 
