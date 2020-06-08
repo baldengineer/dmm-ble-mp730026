@@ -72,18 +72,31 @@
     window.onload = async () => {
         const ReconnectingWebSocket = require('reconnecting-websocket'),
             params = getAllUrlParams(),
-            canvas = document.getElementById('display'),
             topcanvas = document.getElementById('top'),
             bottomcanvas = document.getElementById('bottom'),
-            ctx = canvas.getContext('2d'),
+            frontcanvas = document.getElementById('front'),
+            backcanvas = document.getElementById('back'),
+            char1canvas = document.getElementById('display1'),
+            char2canvas = document.getElementById('display2'),
+            char3canvas = document.getElementById('display3'),
+            char4canvas = document.getElementById('display4'),
             topctx = topcanvas.getContext('2d'),
             bottomctx = bottomcanvas.getContext('2d'),
+            frontctx = frontcanvas.getContext('2d'),
+            backctx = backcanvas.getContext('2d'),
+            char1ctx = char1canvas.getContext('2d'),
+            char2ctx = char2canvas.getContext('2d'),
+            char3ctx = char3canvas.getContext('2d'),
+            char4ctx = char4canvas.getContext('2d'),
             socket = new ReconnectingWebSocket('ws://' + params.websocketserver + ':' + params.websockport);
 
         var heartbeatInterval = null,
             missedHeartbeats = 0,
             ginputdelay = 0,
-            display = new SegmentDisplay("display"),
+            char1 = new SegmentDisplay("display1"),
+            char2 = new SegmentDisplay("display2"),
+            char3 = new SegmentDisplay("display3"),
+            char4 = new SegmentDisplay("display4"),
             backgroundColor = params.background,
             onColor = params.oncolor,
             offColor = params.offcolor;
@@ -98,33 +111,69 @@
             backgroundColor = "Black";
         }
         
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        display.displayAngle    = 5;
-        display.digitHeight     = 20;
-        display.digitWidth      = 15;
-        display.digitDistance   = 2.5;
-        display.segmentWidth    = 2;
-        display.segmentDistance = 0.5;
-        display.segmentCount    = 14;
-        display.cornerType      = 3;
-        display.colorOn         = onColor;
-        display.colorOff        = offColor;
-        display.pattern         = "##.#######";
-        display.draw();
-        display.setValue("-1.502  kΩ");
-        canvas.style.background = backgroundColor;
-        topcanvas.style.background = backgroundColor;
-        bottomcanvas.style.background = backgroundColor;
+        
+        char1.displayAngle    = 5;
+        char1.digitHeight     = 20;
+        char1.digitWidth      = 15;
+        char1.digitDistance   = 2.5;
+        char1.segmentWidth    = 2;
+        char1.segmentDistance = 0.5;
+        char1.segmentCount    = 14;
+        char1.cornerType      = 3;
+        char1.colorOn         = onColor;
+        char1.colorOff        = offColor;
+        char1.pattern         = "#";
+        char1.draw();
+        
+        char2.displayAngle    = 5;
+        char2.digitHeight     = 20;
+        char2.digitWidth      = 15;
+        char2.digitDistance   = 2.5;
+        char2.segmentWidth    = 2;
+        char2.segmentDistance = 0.5;
+        char2.segmentCount    = 14;
+        char2.cornerType      = 3;
+        char2.colorOn         = onColor;
+        char2.colorOff        = offColor;
+        char2.pattern         = "#";
+        char2.draw();
+        
+        char3.displayAngle    = 5;
+        char3.digitHeight     = 20;
+        char3.digitWidth      = 15;
+        char3.digitDistance   = 2.5;
+        char3.segmentWidth    = 2;
+        char3.segmentDistance = 0.5;
+        char3.segmentCount    = 14;
+        char3.cornerType      = 3;
+        char3.colorOn         = onColor;
+        char3.colorOff        = offColor;
+        char3.pattern         = "#";
+        char3.draw();
+        
+        char4.displayAngle    = 5;
+        char4.digitHeight     = 20;
+        char4.digitWidth      = 15;
+        char4.digitDistance   = 2.5;
+        char4.segmentWidth    = 2;
+        char4.segmentDistance = 0.5;
+        char4.segmentCount    = 14;
+        char4.cornerType      = 3;
+        char4.colorOn         = onColor;
+        char4.colorOff        = offColor;
+        char4.pattern         = "#";
+        char4.draw();
+                
+        document.getElementById("display").style.background = backgroundColor;
+        
         bottomctx.font = "italic bold 14pt Arial";
-        bottomctx.fillStyle = display.colorOn;
-        bottomctx.fillText("MP730026 BLE DMM",62,18);
+        bottomctx.fillStyle = onColor;
+        bottomctx.fillText("MP730026 BLE DMM",37,15);
         
-        topctx.font = "bold 16pt Arial";
-        topctx.fillStyle = display.colorOn;
-        
-        topctx.fillText("HOLD",61,18);
-        topctx.fillStyle = display.colorOff;
-        topctx.fillText("REL",190,18);
+        topctx.font = "16pt Arial";
+        topctx.fillStyle = offColor;
+       // topctx.fillText("HOLD",61,18);
+       // topctx.fillText("REL",190,18);
         socket.onopen = (event) => {
             console.log('Connected to: ' + event.currentTarget.url);
         };
@@ -136,34 +185,85 @@
             let dataReg = /(.*) (.*) (.*) (.*)/,
                 patternReg = /[\-0-9]/g,
                 zeroReg = /(?<![\.1-9])0(?!$)/g,
-                value = '',
                 pattern = '';
-                
-                
+
             switch (event.data) {
                 case 'Connected':
                     return;
             }
-            //Get matched values
-            let patternMatch = event.data.match(dataReg);
-            //Replace leading zeros with spaces
-            value = patternMatch[3].replace(zeroReg,"");
-            //Turn Value into Mask for LCD Padding to 9 long
-            pattern = value.replace(patternReg,"#").padStart(6,"#");
-            //Append Suffix with padding for justification
-            
-            value = value + patternMatch[4].padStart(3," ");
-            console.log(value)
-            
-            //Add additional Spots for Suffix
-            display.pattern = pattern + "###";
-            display.draw();
-            display.setValue(value.padStart(9," "));
-            
+            let DMM = JSON.parse(event.data);
+            if (!DMM.value){
+                char1.setValue("");
+                char2.setValue("");
+                char3.setValue("");
+                char4.setValue("");
+                DMM.suffix = "";
+            } else if(DMM.value == "O.L"){
+                char1.setValue("");
+                char2.setValue("o");
+                char3.setValue("l");
+                char4.setValue("");
+                DMM.decimal = 2;
+            } else {
+                let value = DMM.value.replace(".","")
+                value = value.replace("-","")
+                char1.setValue(value.charAt(0));
+                char2.setValue(value.charAt(1));
+                char3.setValue(value.charAt(2));
+                char4.setValue(value.charAt(3));
+            }
+            frontctx.clearRect(0, 0, frontcanvas.width, frontcanvas.height);
+            frontctx.font = "italic bold 38pt Arial";
+            frontctx.fillStyle = char1.colorOff;
+            if(DMM.negative == true){
+                frontctx.fillStyle = char1.colorOn;
+            }
+            frontctx.fillText("-",2,33);
+
+            topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
+            topctx.font = "16pt Arial";
+            topctx.fillStyle = char1.colorOff;
+            if(DMM.hold == true){
+                topctx.fillStyle = char1.colorOn;
+            }
+            topctx.fillText("HOLD",30,18);
+
+            topctx.font = "16pt Arial";
+            topctx.fillStyle = char1.colorOff;
+            if(DMM.rel == true){
+                topctx.fillStyle = char1.colorOn;
+            }
+            topctx.fillText("REL",100,18);
+
+            topctx.font = "16pt Arial";
+            topctx.fillStyle = char1.colorOff;
+            if(DMM.autorange == true){
+                topctx.fillStyle = char1.colorOn;
+            }
+
+            topctx.fillText("AUTO",153,18);
+
+            backctx.clearRect(0, 0, backcanvas.width, backcanvas.height);
+            backctx.font = "28pt Arial";
+            backctx.fillStyle = char1.colorOn;
+            backctx.fillText(DMM.suffix,0,40,50)
+
+            switch (DMM.decimal){
+                case 1:
+                    char1ctx.fillRect(35,35,3,5);
+                    break;
+                case 2:
+                    char2ctx.fillRect(35,35,3,5);
+                    break;
+                case 3:
+                    char3ctx.fillRect(35,35,3,5);
+                    break;
+                case 4:
+                    char4ctx.fillRect(35,35,3,5);
+                    break;
+
+            }
             console.log(pattern);
-           
-            
-            
         };
     };
 })();
