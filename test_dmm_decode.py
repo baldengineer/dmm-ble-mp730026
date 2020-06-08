@@ -8,7 +8,6 @@
 from mp730026 import DMM
 import asyncio
 
-
 debug = False
 BLEDMM = DMM("TESTMAC")
 
