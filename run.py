@@ -11,6 +11,7 @@ def get_json(meter):
     """
 
     values = {
+        "timestamp": datetime.datetime.now().timestamp(),
         "MAC": meter.MAC,
         "mode": meter.mode,
         "hold": meter.hold,
