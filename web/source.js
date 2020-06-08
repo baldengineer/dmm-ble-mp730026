@@ -169,11 +169,18 @@
         bottomctx.font = "italic bold 14pt Arial";
         bottomctx.fillStyle = onColor;
         bottomctx.fillText("MP730026 BLE DMM",37,15);
-        
+        char1.setValue("");
+        char2.setValue("");
+        char3.setValue("");
+        char4.setValue("");
         topctx.font = "16pt Arial";
         topctx.fillStyle = offColor;
-       // topctx.fillText("HOLD",61,18);
-       // topctx.fillText("REL",190,18);
+        topctx.fillText("HOLD",30,18);
+        topctx.fillText("REL",100,18);
+        topctx.fillText("AUTO",153,18);
+        frontctx.font = "italic bold 38pt Arial";
+        frontctx.fillStyle = char1.colorOff;
+        frontctx.fillText("-",5,33);
         socket.onopen = (event) => {
             console.log('Connected to: ' + event.currentTarget.url);
         };
@@ -218,7 +225,7 @@
             if(DMM.negative == true){
                 frontctx.fillStyle = char1.colorOn;
             }
-            frontctx.fillText("-",2,33);
+            frontctx.fillText("-",5,33);
 
             topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
             topctx.font = "16pt Arial";
