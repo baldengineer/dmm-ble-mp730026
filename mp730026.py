@@ -29,6 +29,7 @@ class DMM:
         self.value = "Loading..."
         self.suffix = False
         self.decimal = False
+        self.negative = False
 
     def __decode_hold_and_rel(self, data):
         rel_indicator_state = False
@@ -101,6 +102,9 @@ class DMM:
                 )
                 if readingMSB > 0x7F:
                     final_value = "-" + final_value
+                    self.negative = True
+                else:
+                    self.negative = False
         else:
             # there is not a valid display
             final_value = "O.L"  # TODO The decimal shouldn't be hard coded
