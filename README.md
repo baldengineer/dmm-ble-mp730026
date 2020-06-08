@@ -31,6 +31,7 @@ This library exposes a DMM object that exposes all the data for a mp730026 multi
   self.value = False    # String containing 4 digit and one decimal Value 
   self.suffix = False   # String of data suffix. EG mV KΩ
   self.decimal = False  # Decimal Position
+  self.negative = False # If the number is a negative value
 ```
 
 
@@ -47,19 +48,11 @@ rel = False
 value = -1.502
 suffix = "V"
 decimal = 1
+negative = False
 ```
 
 
 
-The object also provides a serve_websocket function 
-
-```python
-DMM.serve_websocket(websocket)
-```
-
-Which is intended to be called from a websockets handler call back to send data to the websocket client until connection close. 
-
-This is provided as an example in run.py
 
 
 
