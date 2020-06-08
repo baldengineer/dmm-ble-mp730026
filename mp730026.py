@@ -31,6 +31,7 @@ class DMM:
         self.decimal = False
         self.negative = False
         self.autorange = False
+        self.connected = False
 
     def __decode_hold_and_rel(self, data):
         rel_indicator_state = False
@@ -173,6 +174,8 @@ class DMM:
                 x = await client.is_connected()
                 logger.info("Connected: {0}".format(x))
 
+                self.connected = True
+
                 await client.start_notify(
                     CHARACTERISTIC_UUID, self.__notification_handler
                 )
@@ -186,6 +189,7 @@ class DMM:
                 self.rel = False
                 self.decimal = False
                 self.suffix = False
+                self.connected = False
                 del client
 
             except exc.BleakError:
