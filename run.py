@@ -33,7 +33,7 @@ async def send_websocket(websocket, path):
         try:
             await websocket.send(data)
         except websockets.exceptions.ConnectionClosedOK:
-            print("Connection closed.")
+            pass
 
         print(data)
         await asyncio.sleep(0.25)
