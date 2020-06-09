@@ -12,7 +12,7 @@ Using [the bleak python module](https://github.com/hbldh/bleak), virtually any o
 * Windows 10: Microsoft Surface Book Pro 2
 * Linux: Raspberry Pi 3B
 
-The intent for the code is to provide an object representing the DMM. 
+The intent for the code is to provide an object representing the DMM.
 
 decoding dmm maybe.txt are messages from my meter along with descriptions of what the screen showed.
 
@@ -24,10 +24,11 @@ bleak_scan.py can be used to find the MAC address of your meter.
 
 This library exposes a DMM object that exposes all the data for a mp730026 multimeter
 
+Copy the settings.py.template to settings.py and make necessary changes for your configuration. This file will not be over-written on updates.
 
 
 ```python
-  self.MAC = MAC         # Devices MAC address
+  self.address = address # Devices MAC address
   self.mode = False      # Current measurement Mode. EG AC voltage
   self.hold = False      # hold Flag
   self.rel = False       # rel Flag
@@ -62,9 +63,9 @@ autorange = False
 
 # Included Example
 
-Included is an example for connecting a meter to a web-socket for sending the data across the internet, In this case to a web page to show off the multimeter reading in real time. 
+Included is an example for connecting a meter to a web-socket for sending the data across the internet, In this case to a web page to show off the multimeter reading in real time.
 
-executing: 
+executing:
 
 ```
 run.py
@@ -123,7 +124,7 @@ width = 250
 height = 85
 ```
 
-All other defaults are fine. 
+All other defaults are fine.
 
 
 ### Raspberry Pi specifics
