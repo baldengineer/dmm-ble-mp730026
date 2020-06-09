@@ -1,5 +1,6 @@
 # Original Author James Lewis 2020-01, Heavily modified into a Class and module by
 # Tim 'Geekboy1011" Keller - 2020-06
+# Additional major contributions by TisBoyo - 2020-06
 # MIT License
 # MP730026
 # Module to decode and manages instances of a BLE DMM mp730026

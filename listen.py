@@ -1,3 +1,8 @@
+# Written by TisBoyo 2020-06
+# MIT License
+# MP730026
+# Module to Test websocket server demo with python and asyncio
+
 import asyncio
 import websockets
 
