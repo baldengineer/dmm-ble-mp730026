@@ -10,9 +10,10 @@ from bleak import BleakClient
 from bleak import _logger as logger
 from bleak import exc
 import asyncio
+from .. import DMM
 
 
-from value_table import values, mode_strings, unit_strings
+from .value_table import values
 
 debug = False
 
@@ -21,18 +22,13 @@ debug = False
 CHARACTERISTIC_UUID = "0000fff4-0000-1000-8000-00805f9b34fb"
 
 
-class DMM:
+class MP730026(DMM):
     def __init__(self, MAC):
+        # Load the parent class values
+        DMM.__init__(self, MAC)
+
+        # Local meter values below here.
         self.MAC = MAC
-        self.mode = False
-        self.hold = False
-        self.rel = False
-        self.value = False
-        self.suffix = False
-        self.decimal = False
-        self.negative = False
-        self.autorange = False
-        self.connected = False
 
     def __decode_hold_and_rel(self, data):
         rel_indicator_state = False
@@ -60,8 +56,8 @@ class DMM:
         mode = data[0]
 
         try:
-            mode_str = mode_strings[values[mode][0]]
-            units_str = unit_strings[values[mode][1]]
+            mode_str = self.mode_strings[values[mode][0]]
+            units_str = self.unit_strings[values[mode][1]]
             range_decimal_pos = values[mode][2]
 
         except KeyError:

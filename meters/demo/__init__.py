@@ -4,22 +4,13 @@
 # Module to Mimic instances of a BLE DMM mp730026 causing random display variations
 import asyncio
 import random
+from .. import DMM
 
-from value_table import values, mode_strings, unit_strings
 
-
-class DMM:
-    def __init__(self, MAC):
-        self.MAC = MAC
-        self.mode = False
-        self.hold = False
-        self.rel = False
-        self.value = False
-        self.suffix = False
-        self.decimal = False
-        self.negative = False
-        self.autorange = False
-        self.connected = False
+class Demo(DMM):
+    def __init__(self, address="Demo"):
+        # Load the parent class values
+        DMM.__init__(self, address)
 
     async def run(self):
 
@@ -38,6 +29,6 @@ class DMM:
             self.rel = random.choice([True, False])
             self.autorange = random.choice([True, False])
 
-            _, self.suffix = random.choice(list(unit_strings.items()))
+            _, self.suffix = random.choice(list(self.unit_strings.items()))
 
             await asyncio.sleep(1)

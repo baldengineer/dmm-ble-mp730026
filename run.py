@@ -3,9 +3,9 @@ import asyncio
 import json
 import datetime
 
-from mp730026 import DMM
+from meters.MP730026 import MP730026 as DMM
 
-# from demo_meter import DMM as DMM2
+# from meters.demo import Demo as DMM
 
 # Set the MAC address of the MP730026 meter here.
 MAC = "A5:B3:C2:25:15:0D"
@@ -19,7 +19,7 @@ def get_json(meter):
     # Create a dictionary of values to be passed to the front end
     values = {
         "timestamp": datetime.datetime.now().timestamp(),
-        "MAC": meter.MAC,
+        "address": meter.address,
         "mode": meter.mode,
         "hold": meter.hold,
         "rel": meter.rel,
@@ -57,27 +57,27 @@ async def send_websocket(websocket, path):
         await asyncio.sleep(0.25)
 
 
-print("Ready to connect to the meter...")
+if __name__ == "__main__":
+    print("Ready to connect to the meter...")
 
-# Create the  mp730026 object
-BLEDMM = DMM(MAC)
-# TESTDMM = DMM2("00:00:00:00:00:00")
+    # Create the  mp730026 object
+    BLEDMM = DMM(MAC)
+    # TESTDMM = DMM2("00:00:00:00:00:00")
 
-# Setup our websocket loop
-websocket_loop = websockets.serve(send_websocket, "0.0.0.0", 18881)
+    # Setup our websocket loop
+    websocket_loop = websockets.serve(send_websocket, "0.0.0.0", 18881)
 
-# Create our async loop
-loop = asyncio.get_event_loop()
+    # Create our async loop
+    loop = asyncio.get_event_loop()
 
-# Setup our meter loop
-ble_loops = [BLEDMM.run()]  # , TESTDMM.run()]
+    # Setup our meter loop
+    ble_loops = [BLEDMM.run()]  # , TESTDMM.run()]
 
-# Run all of our loops
-loop.run_until_complete(websocket_loop)
+    # Run all of our loops
+    loop.run_until_complete(websocket_loop)
 
-for bl in ble_loops:
-    loop.create_task(bl)
+    for bl in ble_loops:
+        loop.create_task(bl)
 
-
-# forever
-loop.run_forever()
+    # forever
+    loop.run_forever()

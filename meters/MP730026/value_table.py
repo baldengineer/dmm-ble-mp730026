@@ -3,41 +3,6 @@
 # DMM Decode Byte Array
 # Dictionaries of strings for the decoded values
 
-# Establish dictionary of strings
-mode_strings = dict(
-    dcc="DC Current",
-    acc="AC Current",
-    res="Resistance",
-    cont="Continuity",
-    dcv="DC Voltage",
-    acv="AC Voltage",
-    diode="Diode",
-    freq="Frequency",
-    cap="Capacitor",
-    temp="Temperature",
-    nc="Non-Contact",
-)
-
-unit_strings = dict(
-    uA="uA",
-    mA="mA",
-    A="A",
-    ohm="Ω",
-    kohm="KΩ",
-    mohm="MΩ",
-    mV="mV",
-    V="V",
-    Hz="Hz",
-    KHz="KHz",
-    MHz="MHz",
-    pcnt="%",
-    nF="nF",
-    uF="uF",
-    C="°C",
-    F="°F",
-    space=" ",
-)
-
 # Create initial dictionary for values
 values = dict()
 
