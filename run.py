@@ -2,12 +2,18 @@ import websockets
 import asyncio
 import json
 import datetime
+import logging
 
 import settings
 
 # from meters.MP730026 import MP730026 as DMM
 
 # from meters.demo import Demo as DMM
+
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s: %(name)s: %(message)s", level=logging.WARNING
+)
+logger = logging.getLogger(__name__)
 
 
 def get_json(meter):
@@ -51,7 +57,8 @@ async def send_websocket(websocket, path):
             pass
 
         # Send data to the console
-        print(data)
+        logger.debug(data)
+
         # We don't need the data at blazing fast speeds, plus it causes websocket errors when sending too fast.
         await asyncio.sleep(0.25)
 

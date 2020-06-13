@@ -169,7 +169,7 @@ class MP730026(DMM):
                     pass
 
                 x = await client.is_connected()
-                logger.info("Connected: {0}".format(x))
+                logger.warning(f"Connected: {x}")
 
                 self.connected = True
 
@@ -187,6 +187,7 @@ class MP730026(DMM):
                 self.decimal = False
                 self.suffix = False
                 self.connected = False
+                logger.warning(f"Disconnected: {x}")
                 del client
 
             except exc.BleakError:
