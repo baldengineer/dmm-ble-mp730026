@@ -12,6 +12,8 @@ class DMM:
         self.autorange = False
         self.connected = False
 
+        self.digits = 4
+
     # Establish dictionary of strings
     mode_strings = dict(
         dcc="DC Current",

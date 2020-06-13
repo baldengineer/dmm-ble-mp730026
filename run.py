@@ -33,6 +33,7 @@ def get_json(meter):
         "decimal": meter.decimal,
         "negative": meter.negative,
         "autorange": meter.autorange,
+        "digits": meter.digits,
     }
 
     return json.dumps(values)
