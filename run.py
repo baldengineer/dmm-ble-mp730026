@@ -43,10 +43,18 @@ async def send_websocket(websocket, path):
     while True:
 
         # Grab a json object of the current data
-        # if path == "/test":
-        #     data = get_json(TESTDMM)
-        # else:
-        data = get_json(settings.multi_meters[0])
+        if path != "/":
+            try:
+                meter_id = int(path[1])
+            except ValueError:  # Not a number was passed
+                meter_id = 0
+        else:
+            meter_id = 0
+
+        try:
+            data = get_json(settings.multi_meters[meter_id])
+        except IndexError:  # Default to meter 0 if value passed is invalid
+            data = get_json(settings.multi_meters[0])
 
         try:
             # Send it to the web socket

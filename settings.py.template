@@ -5,6 +5,7 @@ from meters.MP730026 import MP730026
 from meters.demo import Demo
 
 # Then add it to the tuple so it gets instantiated.
+# Supports up to 10 total meters.
 multi_meters = (
     Demo(),
     MP730026("00:00:00:00:00:00"),
