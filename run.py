@@ -1,42 +1,13 @@
 import websockets
 import asyncio
-import json
-import datetime
 import logging
 
 import settings
-
-# from meters.MP730026 import MP730026 as DMM
-
-# from meters.demo import Demo as DMM
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s: %(name)s: %(message)s", level=logging.WARNING
 )
 logger = logging.getLogger(__name__)
-
-
-def get_json(meter):
-    """
-    Takes a DMM object and returns the values as a dictionary
-    """
-
-    # Create a dictionary of values to be passed to the front end
-    values = {
-        "timestamp": datetime.datetime.now().timestamp(),
-        "address": meter.address,
-        "mode": meter.mode,
-        "hold": meter.hold,
-        "rel": meter.rel,
-        "value": meter.value,
-        "suffix": meter.suffix,
-        "decimal": meter.decimal,
-        "negative": meter.negative,
-        "autorange": meter.autorange,
-        "digits": meter.digits,
-    }
-
-    return json.dumps(values)
 
 
 async def send_websocket(websocket, path):
@@ -52,10 +23,13 @@ async def send_websocket(websocket, path):
         else:
             meter_id = 0
 
+        # Grab the meter object from the settings file using the index passed
+        meter = settings.multi_meters[meter_id]
+
         try:
-            data = get_json(settings.multi_meters[meter_id])
+            data = meter.get_json()
         except IndexError:  # Default to meter 0 if value passed is invalid
-            data = get_json(settings.multi_meters[0])
+            data = meter.get_json()
 
         try:
             # Send it to the web socket

@@ -1,3 +1,6 @@
+from datetime import datetime
+from json import dumps
+
 
 class DMM:
     def __init__(self, address):
@@ -13,6 +16,54 @@ class DMM:
         self.connected = False
 
         self.digits = 4
+
+        self.saved = dict()
+
+    def save(self, name: str = str(datetime.now().timestamp())):
+        """Save the current values to the self.saved variable"""
+        self.saved[name] = self.get_json(save=True)
+
+    def del_all_saved(self):
+        """Clear out all of the saved values"""
+        self.saved = dict()
+
+    def del_saved_value(self, name: str):
+        """Clears a saved value"""
+        del self.saved[name]
+
+    def rename_saved(self, name: str, new_name: str):
+        """Renames a saved value"""
+        self.saved[new_name] = self.saved[name]
+        del self.saved[name]
+
+    def get_saved(self):
+        """Returns the saved values"""
+        return self.saved
+
+    def get_json(self, save: bool = False):
+        """
+        Takes a DMM object and returns the values as a dictionary
+        """
+
+        # Create a dictionary of values to be passed to the front end
+        values = {
+            "timestamp": datetime.now().timestamp(),
+            "address": self.address,
+            "mode": self.mode,
+            "hold": self.hold,
+            "rel": self.rel,
+            "value": self.value,
+            "suffix": self.suffix,
+            "decimal": self.decimal,
+            "negative": self.negative,
+            "autorange": self.autorange,
+            "digits": self.digits,
+        }
+
+        if save:
+            values["name"] = datetime.now().timestamp()
+
+        return dumps(values)
 
     # Establish dictionary of strings
     mode_strings = dict(
