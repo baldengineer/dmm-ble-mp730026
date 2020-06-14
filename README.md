@@ -148,3 +148,7 @@ sudo apt-get install nginx
 sudo rm /etc/nginx/sites-available/default # Warning: This will remove the default nginx page
 ln ~/dmm-ble-mp730026/nginx-site /etc/nginx/sites-available/default
 ```
+
+------
+
+![Demo](./demo.gif)
