@@ -1,0 +1,16 @@
+{
+  "name": "bledmm",
+  "version": "1.0.0",
+  "description": "BLE DMM DISPLAY",
+  "main": "dmm.js",
+  "dependencies": {
+    "browserify": "^16.5.1",
+    "reconnecting-websocket": "^4.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
