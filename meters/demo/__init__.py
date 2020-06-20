@@ -8,7 +8,7 @@ from .. import DMM
 
 
 class Demo(DMM):
-    def __init__(self, address="Demo"):
+    def __init__(self, address: str = "Demo"):
         # Load the parent class values
         DMM.__init__(self, address)
 
