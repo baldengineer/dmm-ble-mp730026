@@ -9,7 +9,9 @@ import numpy as np
 from bleak import BleakClient
 from bleak import _logger as logger
 from bleak import exc
+from bleak import discover
 import asyncio
+from re import match as re_match
 from .. import DMM
 
 
@@ -21,14 +23,33 @@ debug = False
 # (do not change this)
 CHARACTERISTIC_UUID = "0000fff4-0000-1000-8000-00805f9b34fb"
 
+# If we aren't debugging, we don't need all of the bleak spam
+if not debug:
+    logger.setLevel(30)  # 30 is logging.WARNING
+
 
 class MP730026(DMM):
-    def __init__(self, MAC):
+    """
+    Connect to a MP730026 Digital Multi-meter.
+    Pass the MAC address if known, otherwise autoscan will run.
+    """
+
+    def __init__(self, MAC: str = "autoscan"):
+
         # Load the parent class values
         DMM.__init__(self, MAC)
 
         # Local meter values below here.
         self.MAC = MAC
+
+    async def scan(self):
+        logger.warning(f"Scanning for devices with the name BDM")
+        devices = await discover()
+        for d in devices:
+            if d.name == "BDM":  # BDM is the default name of this type of meter
+                self.MAC = d.address
+
+        return self.MAC
 
     def __decode_hold_and_rel(self, data):
         rel_indicator_state = False
@@ -161,8 +182,24 @@ class MP730026(DMM):
 
         # client = BleakClient(self.MAC, loop=loop)
 
+        # If a MAC was not specified, run autoscan until we find one that matches
+        while self.MAC == "autoscan":
+            self.MAC = await self.scan()
+
+        logger.warning(f"Connecting to {self.MAC}")
         while True:
-            client = BleakClient(self.MAC, loop=loop)
+            try:
+                if re_match("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$", self.MAC):
+                    client = BleakClient(self.MAC, loop=loop)
+                else:
+                    raise ValueError
+
+            except TypeError:
+                logger.error("Invalid data type passed for MAC")
+                break
+            except ValueError:
+                logger.error("Invalid MAC address")
+                break
 
             try:
                 while not await client.connect():
