@@ -11,7 +11,7 @@ except ModuleNotFoundError:
         "Settings.py does not exist.\r\n"
         "Copy settings.py.template to settings.py and modify to your settings.",
     )
-    exit()
+    _exit(0)
 
 
 logging.basicConfig(
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 def signal_handler(sig, frame):
-    print("Program exited")
+    print("\r\nProgram exited successfully.")
     _exit(0)
 
 
