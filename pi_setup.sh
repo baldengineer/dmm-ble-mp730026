@@ -1,7 +1,8 @@
 #!/bin/bash
 
 sudo apt update
-sudo apt install -y npm libatlas-base-dev python3-venv
+sudo apt install -y libatlas-base-dev python3-venv
+# sudo apt install -y npm
 
 python3 -m venv .venv
 source .venv/bin/activate
