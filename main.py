@@ -1,13 +1,28 @@
 import websockets
 import asyncio
 import logging
+import signal
+from os import _exit
 
-import settings
+try:
+    import settings
+except ModuleNotFoundError:
+    print(
+        "Settings.py does not exist.\r\n"
+        "Copy settings.py.template to settings.py and modify to your settings.",
+    )
+    _exit(0)
+
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s: %(name)s: %(message)s", level=logging.WARNING
 )
 logger = logging.getLogger(__name__)
+
+
+def signal_handler(sig, frame):
+    print("\r\nProgram exited successfully.")
+    _exit(0)
 
 
 async def send_websocket(websocket, path):
@@ -47,6 +62,8 @@ async def send_websocket(websocket, path):
 
 
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, signal_handler)
+
     print("Ready to connect to the meter...")
 
     # Setup our websocket loop

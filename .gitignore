@@ -6,9 +6,6 @@ __pycache__/
 # Python VirtualEnv
 .venv/
 
-# VSCode
-.vscode/
-
 #node js cache
 web/node_modules/
 web/dmm.js
