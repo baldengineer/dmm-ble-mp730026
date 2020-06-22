@@ -29,26 +29,32 @@ async def send_websocket(websocket, path):
     """Sends meter data to the websocket when connected"""
     while True:
 
-        # Grab a json object of the current data
-        if path != "/":
-            try:
-                meter_id = int(path[1])
-            except ValueError:  # Not a number was passed
-                meter_id = 0
-        else:
-            meter_id = 0
+        # Index 0 will always be "", a blank index will exist after trailing slash
+        path_values = path.split("/")
+
+        # Defaults to meter 0 if a meter is not passed, or is not a number
+        meter_id = int(path_values[1]) if path_values[1].isdigit() else 0
+
+        # Returns saved data if index 2 is "saved", path=/0/saved or path=//saved
+        get_saved = (
+            True if (len(path_values) > 2 and path_values[2] == "saved") else False
+        )
 
         # Grab the meter object from the settings file using the index passed
         meter = settings.multi_meters[meter_id]
 
-        try:
-            data = meter.get_json()
-        except IndexError:  # Default to meter 0 if value passed is invalid
+        if get_saved:
+            # Grab the saved data for the meter
+            data = meter.get_saved()
+
+        else:
+            # Grab a json object of the current meters data
             data = meter.get_json()
 
         try:
             # Send it to the web socket
             await websocket.send(data)
+
         except websockets.exceptions.ConnectionClosedOK:
             # Catch if a client disconnects and ignore it
             # This was done to prevent traceback errors in the console
