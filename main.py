@@ -1,7 +1,8 @@
 import websockets
 import asyncio
 import logging
-from sys import exit
+import signal
+from os import _exit
 
 try:
     import settings
@@ -17,6 +18,11 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)s: %(name)s: %(message)s", level=logging.WARNING
 )
 logger = logging.getLogger(__name__)
+
+
+def signal_handler(sig, frame):
+    print("Program exited")
+    _exit(0)
 
 
 async def send_websocket(websocket, path):
@@ -56,6 +62,8 @@ async def send_websocket(websocket, path):
 
 
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, signal_handler)
+
     print("Ready to connect to the meter...")
 
     # Setup our websocket loop
