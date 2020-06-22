@@ -38,7 +38,7 @@ class DMM:
 
     def get_saved(self):
         """Returns the saved values"""
-        return self.saved
+        return dumps(self.saved)
 
     def get_json(self, save: bool = False):
         """

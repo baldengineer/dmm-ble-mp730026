@@ -31,4 +31,11 @@ class Demo(DMM):
 
             _, self.suffix = random.choice(list(self.unit_strings.items()))
 
+            # Fake some saved data
+            self.save()
+
+            # Wipe out the dummy saved data when we get to 10 values
+            if len(self.saved) >= 10:
+                self.saved = dict()
+
             await asyncio.sleep(1)

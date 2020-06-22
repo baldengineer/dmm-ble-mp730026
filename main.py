@@ -37,7 +37,9 @@ async def send_websocket(websocket, path):
 
         # Returns saved data if index 2 is "saved", path=/0/saved or path=//saved
         get_saved = (
-            True if (len(path_values) > 2 and path_values[2] == "saved") else False
+            True
+            if (len(path_values) > 2 and path_values[2].startswith("saved"))
+            else False
         )
 
         # Grab the meter object from the settings file using the index passed
