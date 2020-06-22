@@ -1,8 +1,17 @@
 import websockets
 import asyncio
 import logging
+from sys import exit
 
-import settings
+try:
+    import settings
+except ModuleNotFoundError:
+    print(
+        "Settings.py does not exist.\r\n"
+        "Copy settings.py.template to settings.py and modify to your settings.",
+    )
+    exit()
+
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s: %(name)s: %(message)s", level=logging.WARNING
