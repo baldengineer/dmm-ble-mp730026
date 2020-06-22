@@ -10,10 +10,11 @@ from bleak import BleakClient
 from bleak import _logger as logger
 from bleak import exc
 from bleak import discover
+from txdbus.error import RemoteError  # Used for bluetooth errors
 import asyncio
 from re import match as re_match
+from os import _exit
 from .. import DMM
-
 
 from .value_table import values
 
@@ -44,7 +45,12 @@ class MP730026(DMM):
 
     async def scan(self):
         logger.warning(f"Scanning for devices with the name BDM")
-        devices = await discover()
+        try:
+            devices = await discover()
+        except RemoteError:
+            print("Bluetooth Permissions error. See Readme.md")
+            _exit(0)
+
         for d in devices:
             if d.name == "BDM":  # BDM is the default name of this type of meter
                 self.MAC = d.address
@@ -232,6 +238,10 @@ class MP730026(DMM):
                 self.connected = False
                 logger.warning(f"Disconnected: {x}")
                 del client
+
+            except RemoteError:
+                print("Bluetooth Permissions error. See Readme.md")
+                _exit(0)
 
             except exc.BleakError:
                 continue
