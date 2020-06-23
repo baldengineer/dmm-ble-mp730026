@@ -19,8 +19,12 @@ class DMM:
 
         self.saved = dict()
 
-    def save(self, name: str = str(datetime.now().timestamp())):
+    def save(self, name: str = None):
         """Save the current values to the self.saved variable"""
+
+        if not name:
+            name = str(datetime.now().timestamp())
+
         self.saved[name] = self.get_json(save=True)
 
     def del_all_saved(self):
