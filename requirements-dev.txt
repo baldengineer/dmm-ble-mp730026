@@ -4,3 +4,6 @@ black
 numpy
 bleak
 websockets
+fastapi
+uvicorn
+aiofiles

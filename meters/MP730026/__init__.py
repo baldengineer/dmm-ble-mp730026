@@ -6,17 +6,23 @@
 # Module to decode and manages instances of a BLE DMM mp730026
 import struct
 import numpy as np
+
 from bleak import BleakClient
-from bleak import _logger as logger
+from bleak import _logger as bleaklogger
 from bleak import exc
 from bleak import discover
+
 from txdbus.error import RemoteError  # Used for bluetooth errors
 import asyncio
 from re import match as re_match
-from os import _exit
-from .. import DMM
+from fastapi import logger as _logger
 
+from os import _exit
+
+from .. import DMM
 from .value_table import values
+
+logger = _logger.logger
 
 debug = False
 
@@ -24,9 +30,9 @@ debug = False
 # (do not change this)
 CHARACTERISTIC_UUID = "0000fff4-0000-1000-8000-00805f9b34fb"
 
-# If we aren't debugging, we don't need all of the bleak spam
+# Disable Bleak logging debug spam
 if not debug:
-    logger.setLevel(30)  # 30 is logging.WARNING
+    bleaklogger.setLevel(30)  # 30 is logging.WARNING
 
 
 class MP730026(DMM):
@@ -190,6 +196,7 @@ class MP730026(DMM):
 
     async def run(self):
 
+        logger.warning(f"MP730026 running as {self.__class__.__name__}.")
         loop = asyncio.get_event_loop()
 
         # client = BleakClient(self.MAC, loop=loop)

@@ -4,7 +4,10 @@
 # Module to Mimic instances of a BLE DMM mp730026 causing random display variations
 import asyncio
 import random
+from fastapi import logger as _logger
 from .. import DMM
+
+logger = _logger.logging
 
 
 class Demo(DMM):
@@ -14,6 +17,7 @@ class Demo(DMM):
 
     async def run(self):
 
+        logger.warning("Demo Meter running.")
         self.decimal = 0
         while True:
 
