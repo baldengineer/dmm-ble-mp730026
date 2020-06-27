@@ -10,11 +10,9 @@ Using [the bleak python module](https://github.com/hbldh/bleak), virtually any o
 
 * macOS: Macbook Pro and MacPro (Trashcan)
 * Windows 10: Microsoft Surface Book Pro 2
-* Linux: Raspberry Pi 3B
+* Linux: Raspberry Pi 3B, Raspberry Pi 4, Raspberry Pi0W
 
-The intent for the code is to provide an object representing the DMM. 
-
-decoding dmm maybe.txt are messages from my meter along with descriptions of what the screen showed.
+The intent for the code is to provide an object representing the DMM.
 
 bleak_scan.py can be used to find the MAC address of your meter.
 
@@ -24,10 +22,11 @@ bleak_scan.py can be used to find the MAC address of your meter.
 
 This library exposes a DMM object that exposes all the data for a mp730026 multimeter
 
+Copy the settings.py.template to settings.py and make necessary changes for your configuration. This file will not be over-written on updates.
 
 
 ```python
-  self.MAC = MAC         # Devices MAC address
+  self.address = address # Devices MAC address
   self.mode = False      # Current measurement Mode. EG AC voltage
   self.hold = False      # hold Flag
   self.rel = False       # rel Flag
@@ -36,6 +35,8 @@ This library exposes a DMM object that exposes all the data for a mp730026 multi
   self.decimal = False   # Decimal Position
   self.negative = False  # If the number is a negative value
   self.autorange = False # Auto-range flag
+  self.connected = False # Returns the status of the meter
+  self.digits = 4        # The number of digits the meter can display
 ```
 
 
@@ -56,18 +57,22 @@ negative = False
 autorange = False
 ```
 
-
-
-
-
 # Included Example
 
-Included is an example for connecting a meter to a web-socket for sending the data across the internet, In this case to a web page to show off the multimeter reading in real time. 
+Included is an example for connecting a meter to a web-socket for sending the data across the internet, In this case to a web page to show off the multimeter reading in real time.
 
-executing: 
+setup on Raspberry Pi:
 
+```bash
+./pi_setup.sh
 ```
-run.py
+
+This will install the appropriate programs needed and create a python virtual environment 
+
+executing:
+
+```bash
+source run.py
 ```
 
 Will start up the websocket and bluetooth services for getting data from the meter.
@@ -75,6 +80,8 @@ Will start up the websocket and bluetooth services for getting data from the met
 ### Accessing
 
 Opening index.html either locally or hosted with the following flags
+
+
 
 ###### websocketserver *required
 
@@ -88,7 +95,7 @@ Web socket port, default is 18881
 
 RGB syntax or [HTML color names](https://htmlcolorcodes.com/color-names/),
 
-```
+```html
 rgb(250,128,114)
 salmon
 ```
@@ -107,8 +114,9 @@ Color of the brighter foreground elements
 
 ##### Examples
 
-- /index.html?websocketserver=127.0.0.1&websockport=18881&background=grey&onColor=black&offColor=dimgrey
-- /index.html?websocketserver=127.0.0.1&websockport=18881&background=black&onColor=Lime&offColor=DarkGreen
+- http://127.0.0.1/index.html?websocketserver=127.0.0.1&websockport=18881&background=grey&onColor=black&offColor=dimgrey
+- http://localhost/index.html?websocketserver=127.0.0.1&websockport=18881&background=black&onColor=Lime&offColor=DarkGreen
+- http://192.168.1.71/index.html?websocketserver=192.168.1.71&websockport=18881&background=grey&onColor=black&offColor=dimgrey
 
 
 
@@ -123,7 +131,7 @@ width = 250
 height = 85
 ```
 
-All other defaults are fine. 
+All other defaults are fine.
 
 
 ### Raspberry Pi specifics
@@ -147,3 +155,7 @@ sudo apt-get install nginx
 sudo rm /etc/nginx/sites-available/default # Warning: This will remove the default nginx page
 ln ~/dmm-ble-mp730026/nginx-site /etc/nginx/sites-available/default
 ```
+
+------
+
+![Demo](./demo.gif)

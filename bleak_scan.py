@@ -6,12 +6,15 @@ import time
 # and have the name "BDM"
 # A5:B3:C2:22:14:D2: BDM
 
-async def run():
+
+async def scan():
     devices = await discover()
     for d in devices:
         print(d)
 
-while(1):
-	loop = asyncio.get_event_loop()
-	loop.run_until_complete(run())
-	time.sleep(1)
+
+if __name__ == "__main__":
+    while True:
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(scan())
+        time.sleep(1)
