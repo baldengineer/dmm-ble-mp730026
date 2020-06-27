@@ -103,7 +103,9 @@ class MP730026(DMM):
             mode_str = str(hex(mode))  # its a new mode, so display it
             units_str = "?"
             range_decimal_pos = 5
-            logger.error(f"Unknown mode {hex(mode)}")
+            logger.error(
+                f"Unknown Values - MP730026.__decode_mode_and_range.mode={hex(mode)}"
+            )
 
         value = [mode, mode_str, units_str, range_decimal_pos]
         logger.debug("	decode_mode: " + str(value))

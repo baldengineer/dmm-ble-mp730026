@@ -35,7 +35,6 @@ values[0x29F1] = ["res", "kohm", 3]  # xxx.x kOhms
 values[0x2AF1] = ["res", "kohm", 2]  # xx.xx kOhms
 values[0x2BF1] = ["res", "kohm", 1]  # ohms 0.994 kohm
 values[0x27F1] = ["res", "ohm", 3]  #
-values[0x21F1] = ["res", "kohm", 3]  #
 values[0x2FF1] = ["res", "mohm", 3]  #
 values[0x32F1] = ["res", "mohm", 2]  #
 values[0x33F1] = ["res", "mohm", 1]  # x.xxx Mohm
