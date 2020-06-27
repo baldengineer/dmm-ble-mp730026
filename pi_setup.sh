@@ -14,7 +14,7 @@ cd web
 # npm install
 # node_modules/.bin/browserify source.js -o dmm.js
 
-# Grab from Geekboy's server instead of building
+# Grab from webserver
 wget http://dmm.keepdream.in/dmm.js
 
 echo "******************************************************************************"
