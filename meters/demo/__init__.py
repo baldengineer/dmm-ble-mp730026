@@ -19,6 +19,8 @@ class Demo(DMM):
 
         logger.warning("Demo Meter running.")
         self.decimal = 0
+        self.connected = True
+
         while True:
 
             self.value = str(random.randint(0, 9999)).zfill(4)

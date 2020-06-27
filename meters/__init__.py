@@ -62,6 +62,7 @@ class DMM:
             "negative": self.negative,
             "autorange": self.autorange,
             "digits": self.digits,
+            "connected": self.connected,
         }
 
         if save:
