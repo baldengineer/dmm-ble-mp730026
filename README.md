@@ -37,6 +37,10 @@ cd ~/dmm-ble-mp730026
 ./pi_setup.sh
 ```
 
+setup on Windows:
+```
+WIP
+```
 This will install the appropriate programs needed and create a python virtual environment 
 
 **Note about `dmm.js`**
@@ -185,6 +189,22 @@ sudo adduser pi bluetooth
 ```
 
 Also you will need to modify a file according to [this post](https://www.raspberrypi.org/forums/viewtopic.php?p=746917&sid=d3eb670e77ee7fb900499168b1bc83d7#p746917)
+
+### Windows - Failed Building Wheel
+
+If you get a Failed Building Wheel error or txdbus ModuleNotFound error you need to install the Twisted wheel manually.
+
+Download the appropriate version from https://www.lfd.uci.edu/~gohlke/pythonlibs/#twisted
+
+If you are using python 3.8, windows 64 bit download Twisted-20.3.0-cp38-cp38-win_amd64.whl
+
+Then install with
+```
+source .venv/Scripts/activate
+pip install %userprofile%\Downloads\Twisted-20.3.0-cp38-cp38-win_amd64.whl
+```
+
+Then run `pip install -r requirements.txt` again.
 
 ### Hosting
 

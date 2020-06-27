@@ -1,3 +1,4 @@
+wheel
 asyncio
 numpy
 bleak
@@ -5,3 +6,4 @@ websockets
 fastapi
 uvicorn
 aiofiles
+txdbus
