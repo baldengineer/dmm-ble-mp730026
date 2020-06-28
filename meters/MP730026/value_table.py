@@ -51,17 +51,21 @@ values[0xE1F2] = ["cont", "ohm", 3]  # xxx.x (?) cont mode
 ################################
 values[0x19F0] = ["dcv", "mV", 3]
 values[0x1AF0] = ["dcv", "mV", 2]  # DC xx.xx mV
+values[0x1BF0] = ["dcv", "mV", 1]
 values[0x20F0] = ["dcv", "V", 4]  # DC XXXX V
+values[0x20F1] = ["dcv", "mV", 1]
 values[0x21F0] = ["dcv", "V", 3]  # DC xxx.x V
 values[0x22F0] = ["dcv", "V", 2]  # DC 10 volt
 values[0x23F0] = ["dcv", "V", 1]  # DC 1 Volts
 
+
 ################################
 ## AC Voltage
 ################################
-values[0x60F0] = ["acv", "V", 4]  # AC xxxx V
 values[0x59F0] = ["acv", "mV", 3]  # AC xxx.x mV
 values[0x5AF0] = ["acv", "mV", 2]  # AC xx.xx mV
+values[0x5BF0] = ["acv", "mV", 1]
+values[0x60F0] = ["acv", "V", 4]  # AC xxxx V
 values[0x61F0] = ["acv", "V", 3]  # AC 000.0 V
 values[0x62F0] = ["acv", "V", 2]  # AC xx.xx V
 values[0x63F0] = ["acv", "V", 1]  # AC x.xxxx V
