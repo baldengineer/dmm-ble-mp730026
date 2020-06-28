@@ -174,8 +174,6 @@ class MP730026(DMM):
         if self.rel:
             string_to_print = string_to_print + ", REL"
 
-        logger.info(string_to_print)
-
         return string_to_print
 
     def parse(self, data: bytearray):
@@ -197,7 +195,7 @@ class MP730026(DMM):
     def __notification_handler(self, sender: str, data: bytearray):
         self.parse(data)
         if self.output_to_console:
-            print(f"[{self.address}] {self.value} {self.suffix} {self.mode}")
+            print(self.print_DMM())
 
     async def run(self):
 
