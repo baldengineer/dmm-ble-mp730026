@@ -48,6 +48,7 @@ class MP730026(DMM):
 
         # Local meter values below here.
         self.MAC = MAC
+        self.output_to_console = False
 
     async def scan(self):
         logger.warning(f"Scanning for devices with the name BDM")
@@ -195,6 +196,8 @@ class MP730026(DMM):
 
     def __notification_handler(self, sender: str, data: bytearray):
         self.parse(data)
+        if self.output_to_console:
+            print(f"[{self.address}] {self.value} {self.suffix} {self.mode}")
 
     async def run(self):
 
