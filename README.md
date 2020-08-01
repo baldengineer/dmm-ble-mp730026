@@ -220,10 +220,11 @@ ln ~/dmm-ble-mp730026/nginx-site /etc/nginx/sites-available/default
 
 ## Supported Meters
 
-| Model    | Required Parameters | Optional Parameters | Settings.py Example           |
-| -------- | ------------------- | ------------------- | ----------------------------- |
-| MP730026 | MAC_Address         |                     | MP730026("AA:AA:AA:AA:AA:AA") |
-| Demo     |                     | Name                | Demo(), Demo("My Demo")       |
+| Mfg       | Model                                                        | Required Parameters | Optional Parameters | Settings.py Example           |
+| --------- | ------------------------------------------------------------ | ------------------- | ------------------- | ----------------------------- |
+| Multicomp | [MP730026](https://www.newark.com/multicomp-pro/mp730026-us/handheld-dmm-with-bluetooth-rohs/dp/10AH2405) | MAC_Address         |                     | MP730026("AA:AA:AA:AA:AA:AA") |
+| Owon      | OW18B                                                        | MAC_Address         |                     | OW18B("AA:AA:AA:AA:AA:AA")    |
+|           | Demo                                                         |                     | Name                | Demo(), Demo("My Demo")       |
 
 Support for more meters is in progress. If you have a meter you would like to be supported, please check the [Issues](https://github.com/baldengineer/dmm-ble-mp730026/issues), and add a new Issue if no one else has requested it.
 
