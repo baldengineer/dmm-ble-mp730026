@@ -49,6 +49,7 @@ class MP730026(DMM):
         # Local meter values below here.
         self.MAC = MAC
         self.output_to_console = False
+        self.model = "Multicomp Pro MP730026"
 
     async def scan(self):
         logger.warning(f"Scanning for devices with the name BDM")
@@ -199,10 +200,8 @@ class MP730026(DMM):
 
     async def run(self):
 
-        logger.warning(f"MP730026 running as {self.__class__.__name__}.")
+        logger.warning(f"{self.model} running as {self.__class__.__name__}.")
         loop = asyncio.get_event_loop()
-
-        # client = BleakClient(self.MAC, loop=loop)
 
         # If a MAC was not specified, run autoscan until we find one that matches
         while self.MAC == "autoscan":

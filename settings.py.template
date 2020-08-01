@@ -1,8 +1,10 @@
 # MIT License
 
-# Import your meter
+# Import your meter - Uncomment the ones you need
 from meters.demo import Demo
 from meters.MP730026 import MP730026
+
+# from meters.OW18B import OW18B
 
 
 # Then add it to the tuple so it gets instantiated.
