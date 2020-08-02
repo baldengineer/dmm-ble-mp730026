@@ -1,4 +1,4 @@
-from fastapi import APIRouter, WebSocket
+from fastapi import APIRouter, WebSocket, Request
 from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse, JSONResponse
 import uvicorn
 import asyncio
@@ -34,13 +34,23 @@ async def send_segment_displayjs():
     return FileResponse("web/segment-display.js", media_type="text/javascript")
 
 
-@router.get("/meter.html")
+@router.get("/meter")
 async def meter():
     return FileResponse("web/meter.html", media_type="text/html")
 
 
+@router.get("/saved")
+async def saved():
+    return FileResponse("web/saved.html", media_type="text/html")
+
+
 @router.get("/{item_id}")
-async def live_meter(item_id: str):
-    # url = f"http://192.168.1.71:18881/meter.html?websocketserver=192.168.1.71&websocketport=18881&meter={item_id}"
-    # return RedirectResponse(url)
-    pass
+async def live_meter(item_id: str, request: Request):
+    url = f"{request.base_url}meter?websocketserver={request.base_url.hostname}&websocketport={request.base_url.port}&meter={item_id}"
+    return RedirectResponse(url)
+
+
+@router.get("/saved/{item_id}")
+async def saved_meter(item_id: str, request: Request):
+    url = f"{request.base_url}saved?websocketserver={request.base_url.hostname}&websocketport={request.base_url.port}&meter={item_id}"
+    return RedirectResponse(url)
