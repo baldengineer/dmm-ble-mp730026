@@ -8,6 +8,8 @@ class ModelNumber(DMM):
     def __init__(self, address):
         DMM.__init__(self, address)
 
+        self.model = "Mfg Model"
+
     async def run():
         # Do your magic here.
 ```

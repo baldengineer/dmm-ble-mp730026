@@ -1,7 +1,8 @@
 # SETUP
 
 ```
+cd ~/dmm-ble-mp730026/web
 npm install
-browserify source.js -o dmm.js
+node_modules/.bin/browserify source.js -o dmm.js
 ```
 
