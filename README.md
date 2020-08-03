@@ -4,7 +4,7 @@
 
  # About
 
-Python code to access the a Multicomp Pro MP730026 DMM over BLE
+Python code to access the a Multicomp Pro MP730026 (and others) DMM over BLE
 
 This multimeter supports communication over Bluetooth, however, the official software is not very good. It only works with a specific dongle.
 
@@ -16,7 +16,7 @@ Using [the bleak python module](https://github.com/hbldh/bleak), virtually any o
 
 * Windows 10: Microsoft Surface Book Pro 2
 
-  
+
 
 The intent for the code is to provide an object representing the DMM.
 
@@ -41,18 +41,19 @@ setup on Windows:
 ```
 WIP
 ```
-This will install the appropriate programs needed and create a python virtual environment 
+This will install the appropriate programs needed and create a python virtual environment
 
 **Note about `dmm.js`**
 
-Building `dmm.js` requires installing node and some node modules to build it from source. The installation script pulls a current version from a hosted server.
-If you would like to build `dmm.js` instead of downloading it, uncomment the *Build dmm.js* section and comment the *Grab from webserver* section in `pi_setup.sh` before running it.
+Building `dmm.js` requires installing node and some node modules to build it from source. These will install locally inside the scripts folder. The installation script will then build `dmm.js`.
+
+
 
 ## Before first run
 
 Copy the `settings.py.template` to `settings.py` This file will not be over-written on updates.
 
-The `multi_meters` is a comma separated list for each meter you wish to connect to. The template currently has *MP730026* as meter 0, and Demo as meter 1. 
+The `multi_meters` is a comma separated list for each meter you wish to connect to. The template currently has *MP730026* as meter 0, and Demo as meter 1.
 
 See [Supported Meters](#supported-meters) for specific configurations to pass.
 
@@ -65,7 +66,7 @@ cd ~/dmm-ble-mp730026
 ./run.sh
 ```
 
-Will start up the websocket and Bluetooth services for getting data from the meter.
+Will start up the webserver, websocket server and Bluetooth services for getting data from the meter.
 
 If you get a permissions error on Raspberry Pi see [Raspberry Pi Permissions](#raspberry-pi-permissions)
 
@@ -75,17 +76,18 @@ This library exposes a DMM object that exposes all the data for a mp730026 multi
 
 
 ```python
-  self.address = address # Devices MAC address
-  self.mode = False      # Current measurement Mode. EG AC voltage
-  self.hold = False      # hold Flag
-  self.rel = False       # rel Flag
-  self.value = False     # String containing 4 digit and one decimal Value
-  self.suffix = False    # String of data suffix. EG mV KΩ
-  self.decimal = False   # Decimal Position
-  self.negative = False  # If the number is a negative value
-  self.autorange = False # Auto-range flag
-  self.connected = False # Returns the status of the meter
-  self.digits = 4        # The number of digits the meter can display
+  self.address = address   # Devices MAC address
+  self.mode = False        # Current measurement Mode. EG AC voltage
+  self.hold = False        # hold Flag
+  self.rel = False         # rel Flag
+  self.value = False       # String containing 4 digit and one decimal Value
+  self.suffix = False      # String of data suffix. EG mV KΩ
+  self.decimal = False     # Decimal Position
+  self.negative = False    # If the number is a negative value
+  self.autorange = False   # Auto-range flag
+  self.connected = False   # Returns the status of the meter
+  self.digits = 4          # The number of digits the meter can display
+  self.model = "Mfg Model" # Manufacturer and Model numbers of meter
 ```
 
 
@@ -108,13 +110,23 @@ autorange = False
 
 
 
+## Accessing the Data
+
+You can access the web front end on port 18881, example: http://192.168.1.71:18881
+
+Shortcut for meter 0 you can use http://192.168.1.71:18881/0
+Shortcut for meter 1 you can use http://192.168.1.71:18881/1
+etc...
+
+These will redirect you to a longer URL that has settings for colors and label text that you can tweak with the information in [Example URLs](#example-urls)
+
 ## Example URLs
 
 Included is an example for connecting a meter to a web-socket for sending the data across the internet, In this case to a web page to show off the multimeter reading in real time.
 
 ### Accessing Live Data
 
-Opening index.html either locally or hosted with the following flags
+Opening meter.html either locally or hosted with the following flags
 
 **websocketserver *required**
 
