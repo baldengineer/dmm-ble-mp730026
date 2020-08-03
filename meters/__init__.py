@@ -14,6 +14,7 @@ class DMM:
         self.negative = False
         self.autorange = False
         self.connected = False
+        self.low_battery = False
 
         self.digits = 4
 
@@ -63,6 +64,7 @@ class DMM:
             "autorange": self.autorange,
             "digits": self.digits,
             "connected": self.connected,
+            "low_battery": self.low_battery,
         }
 
         if save:
