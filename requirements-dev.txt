@@ -1,0 +1,11 @@
+wheel
+asyncio
+pylint
+black
+numpy
+bleak
+websockets
+fastapi
+uvicorn
+aiofiles
+txdbus
