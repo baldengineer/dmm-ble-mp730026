@@ -15,6 +15,8 @@ class Demo(DMM):
         # Load the parent class values
         DMM.__init__(self, address)
 
+        self.model = "Demo Display"
+
     async def run(self):
 
         logger.warning("Demo Meter running.")
