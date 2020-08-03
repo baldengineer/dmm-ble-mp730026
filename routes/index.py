@@ -18,10 +18,22 @@ default_text = "%20"
 
 
 @router.get("/")
-async def root():
-    return HTMLResponse(
-        '<html><body><center><img src="https://www.inzonedesign.com/wp-content/uploads/2016/10/blog-header-astronaut-houston-we-have-a-problem-im-lost.jpg" /></center></body></html>'
-    )
+async def root(request: Request):
+    response = f"""
+    <html>
+    <body>
+    """
+
+    count = 0
+    for meter in settings.multi_meters:
+        response += f'<a href="{request.base_url}{count}">ID: {count} - {meter.model} - {meter.address} - Connected: {meter.connected}</a><br />'
+        count += 1
+
+    response += f"""
+    </body>
+    </html>
+    """
+    return HTMLResponse(response)
 
 
 # Favicon just because
