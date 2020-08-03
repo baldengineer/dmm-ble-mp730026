@@ -21,10 +21,9 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-
+      with:
+        ref: 'development'
     # Runs commands using the runners shell
-    - name: Checkout development
-      run: git checkout development
     - name: Install libraries
       run: npm install
       working-directory: ./web
