@@ -601,7 +601,7 @@ module.exports = ReconnectingWebSocket;
         ctx.fillStyle = 'white';
         ctx.fillText(text, x, y, width);
     }
-    // Graciously stolen from sitepoint --test
+    // Graciously stolen from sitepoint
     // https://www.sitepoint.com/get-url-parameters-with-javascript/
     function getAllUrlParams(url) {
         // get query string from url (optional) or window
