@@ -1,8 +1,10 @@
 import websockets
 import asyncio
 import logging
-import signal
+import uvicorn
 from os import _exit
+from fastapi import FastAPI, WebSocket
+from fastapi.responses import FileResponse, HTMLResponse
 
 try:
     import settings
@@ -13,79 +15,28 @@ except ModuleNotFoundError:
     )
     _exit(0)
 
-
-logging.basicConfig(
-    format="%(asctime)s %(levelname)s: %(name)s: %(message)s", level=logging.WARNING
-)
-logger = logging.getLogger(__name__)
+# Routes must be imported below settings check because they also import settings
+from routes import ws, index
 
 
-def signal_handler(sig, frame):
-    print("\r\nProgram exited successfully.")
-    _exit(0)
+app = FastAPI()
 
+logger = logging.getLogger("app")
 
-async def send_websocket(websocket, path):
-    """Sends meter data to the websocket when connected"""
-    while True:
+# Add routes for FastAPI
+app.include_router(ws.router)  # Websocket Routes
+app.include_router(index.router)  # Index pages
 
-        # Index 0 will always be "", a blank index will exist after trailing slash
-        path_values = path.split("/")
-
-        # Defaults to meter 0 if a meter is not passed, or is not a number
-        meter_id = int(path_values[1]) if path_values[1].isdigit() else 0
-
-        # Returns saved data if index 2 is "saved", path=/0/saved or path=//saved
-        get_saved = (
-            True
-            if (len(path_values) > 2 and path_values[2].startswith("saved"))
-            else False
-        )
-
-        # Grab the meter object from the settings file using the index passed
-        meter = settings.multi_meters[meter_id]
-
-        if get_saved:
-            # Grab the saved data for the meter
-            data = meter.get_saved()
-
-        else:
-            # Grab a json object of the current meters data
-            data = meter.get_json()
-
-        try:
-            # Send it to the web socket
-            await websocket.send(data)
-
-        except websockets.exceptions.ConnectionClosedOK:
-            # Catch if a client disconnects and ignore it
-            # This was done to prevent traceback errors in the console
-            pass
-
-        # Send data to the console
-        logger.debug(data)
-
-        # We don't need the data at blazing fast speeds, plus it causes websocket errors when sending too fast.
-        await asyncio.sleep(0.25)
-
-
-if __name__ == "__main__":
-    signal.signal(signal.SIGINT, signal_handler)
-
-    print("Ready to connect to the meter...")
-
-    # Setup our websocket loop
-    websocket_loop = websockets.serve(send_websocket, "0.0.0.0", 18881)
-
-    # Create our async loop
+# Startup event adds the meters to the main asyncio loop
+@app.on_event("startup")
+async def startup_event():
     loop = asyncio.get_event_loop()
-
-    # Run all of our loops
-    loop.run_until_complete(websocket_loop)
-
-    # Load all of the meters that are in settings into the loop
     for meter in settings.multi_meters:
         loop.create_task(meter.run())
 
-    # forever
-    loop.run_forever()
+    logger.warning("Ready to connect to the meter...")
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=18881, ws="websockets", reload=True)
+
