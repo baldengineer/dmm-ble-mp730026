@@ -4,13 +4,16 @@
 # Dictionaries of strings for the decoded values
 
 # Create initial dictionary for values
+# Format - values[KEY] = [mode_string, unit_strings, decimal_position]
+# decimal_position is from left to right
+
 values = dict()
 
 ################################
 ## DC Current
 ################################
 values[0x90F0] = ["dcc", "uA", 4]  # DC xxxx uA
-values[0x90F1] = ["dcc", "uA", 3]  # DC xxx.x uA
+values[0x91F0] = ["dcc", "uA", 3]  # DC xxx.x uA
 values[0x97F0] = ["dcc", "uA", 3]  # DC OL. uA
 values[0x99F0] = ["dcc", "mA", 3]  # xxx.x mA
 values[0x9AF0] = ["dcc", "mA", 2]  # xx.xx mA
