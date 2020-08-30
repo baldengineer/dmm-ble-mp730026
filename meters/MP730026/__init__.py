@@ -66,15 +66,12 @@ class MP730026(DMM):
         return self.MAC
 
     def __decode_indicators(self, data: bytearray):
+        indicators = data[1]
 
-        # Convert the data into a byte string, padded on the front by 0's
-        indicators = f"{data[1]:b}".zfill(12)
-
-        # Set flags based on the values passed in
-        low_battery = bool(int(indicators[0]))
-        auto_range_indicator_state = bool(int(indicators[1]))
-        rel_indicator_state = bool(int(indicators[2]))
-        hold_indicator_state = bool(int(indicators[3]))
+        hold_indicator_state = bool(indicators & 256)
+        rel_indicator_state = bool(indicators & 512)
+        auto_range_indicator_state = bool(indicators & 1024)
+        low_battery = bool(indicators & 2048)
 
         return [
             hold_indicator_state,
