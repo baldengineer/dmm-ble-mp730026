@@ -6,23 +6,29 @@
 # Module to decode and manages instances of a BLE DMM mp730026
 import struct
 import numpy as np
+
 from bleak import BleakClient
-from bleak import _logger as logger
+from bleak import _logger as bleaklogger
 from bleak import exc
 from bleak import discover
+
 from txdbus.error import RemoteError  # Used for bluetooth errors
 import asyncio
 from re import match as re_match
-from os import _exit
-from .. import DMM
+from fastapi import logger as _logger
 
+from os import _exit
+
+from .. import DMM
 from .value_table import values
+
+logger = _logger.logger
 
 debug = False
 
 # If we aren't debugging, we don't need all of the bleak spam
 if not debug:
-    logger.setLevel(30)  # 30 is logging.WARNING
+    bleaklogger.setLevel(30)  # 30 is logging.WARNING
 
 
 class MP730026(DMM):
@@ -38,6 +44,8 @@ class MP730026(DMM):
 
         # Local meter values below here.
         self.MAC = MAC
+        self.output_to_console = False
+        self.model = "Multicomp Pro MP730026"
 
     async def scan(self):
         logger.warning(f"Scanning for devices with the name BDM")
@@ -53,27 +61,23 @@ class MP730026(DMM):
 
         return self.MAC
 
-    def __decode_hold_and_rel(self, data: bytearray):
-        rel_indicator_state = False
-        hold_indicator_state = False
-        auto_range_indicator_state = False
-        indicators = data[1]
+    def __decode_indicators(self, data: bytearray):
 
-        # probably a better way to do this with masking, but don't wanna
-        if indicators == 256:
-            hold_indicator_state = True
-        elif indicators == 512:
-            rel_indicator_state = True
-        elif indicators == 768:
-            hold_indicator_state = True
-            rel_indicator_state = True
-        elif indicators == 1024:
-            auto_range_indicator_state = True
-        elif indicators == 1280:
-            auto_range_indicator_state = True
-            hold_indicator_state = True
+        # Convert the data into a byte string, padded on the front by 0's
+        indicators = f"{data[1]:b}".zfill(12)
 
-        return [hold_indicator_state, rel_indicator_state, auto_range_indicator_state]
+        # Set flags based on the values passed in
+        low_battery = bool(int(indicators[0]))
+        auto_range_indicator_state = bool(int(indicators[1]))
+        rel_indicator_state = bool(int(indicators[2]))
+        hold_indicator_state = bool(int(indicators[3]))
+
+        return [
+            hold_indicator_state,
+            rel_indicator_state,
+            auto_range_indicator_state,
+            low_battery,
+        ]
 
     def __decode_mode_and_range(self, data: bytearray):
         """
@@ -93,7 +97,9 @@ class MP730026(DMM):
             mode_str = str(hex(mode))  # its a new mode, so display it
             units_str = "?"
             range_decimal_pos = 5
-            logger.error(f"Unknown mode {hex(mode)}")
+            logger.error(
+                f"Unknown Values - MP730026.__decode_mode_and_range.mode={hex(mode)}"
+            )
 
         value = [mode, mode_str, units_str, range_decimal_pos]
         logger.debug("	decode_mode: " + str(value))
@@ -161,8 +167,6 @@ class MP730026(DMM):
         if self.rel:
             string_to_print = string_to_print + ", REL"
 
-        logger.info(string_to_print)
-
         return string_to_print
 
     def parse(self, data: bytearray):
@@ -179,16 +183,22 @@ class MP730026(DMM):
 
         # Save our values
         self.value = self.__decode_reading_into_hex(unpacked, mode_range)
-        self.hold, self.rel, self.autorange = self.__decode_hold_and_rel(unpacked)
+        (
+            self.hold,
+            self.rel,
+            self.autorange,
+            self.low_battery,
+        ) = self.__decode_indicators(unpacked)
 
     def __notification_handler(self, sender: str, data: bytearray):
         self.parse(data)
+        if self.output_to_console:
+            print(self.print_DMM())
 
     async def run(self):
 
+        logger.warning(f"{self.model} running as {self.__class__.__name__}.")
         loop = asyncio.get_event_loop()
-
-        # client = BleakClient(self.MAC, loop=loop)
 
         # If a MAC was not specified, run autoscan until we find one that matches
         while self.MAC == "autoscan":
