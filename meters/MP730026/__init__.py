@@ -194,7 +194,7 @@ class MP730026(DMM):
         while self.MAC == "autoscan":
             self.MAC = await self.scan()
 
-        logger.warning(f"Connecting to {self.MAC}")
+        logger.warning(f"Connecting to MP730026-{self.MAC}")
         while True:
             try:
                 if re_match("^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$", self.MAC):
