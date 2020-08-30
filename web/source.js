@@ -228,6 +228,14 @@
             frontctx.fillText("-", 5, 33);
 
             topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
+
+            if (DMM.low_battery == true) {
+                topctx.font = "16pt Arial";
+                topctx.fillStyle = char1.colorOn;
+                topctx.fillText("🗲", 5, 18);
+            }
+
+
             topctx.font = "16pt Arial";
             topctx.fillStyle = char1.colorOff;
             if (DMM.hold == true) {
