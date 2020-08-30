@@ -3,6 +3,9 @@ from json import dumps
 
 
 class DMM:
+    # Used by bleak for the Notify Characteristic of BLE
+    NOTIFY_CHARACTERISTIC = "0000fff4-0000-1000-8000-00805f9b34fb"
+
     def __init__(self, address):
         self.address = address
         self.mode = False

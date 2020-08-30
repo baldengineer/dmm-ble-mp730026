@@ -20,10 +20,6 @@ from .value_table import values
 
 debug = False
 
-# This characteristic UUID is for the BDM / MP730026 BLE message
-# (do not change this)
-CHARACTERISTIC_UUID = "0000fff4-0000-1000-8000-00805f9b34fb"
-
 # If we aren't debugging, we don't need all of the bleak spam
 if not debug:
     logger.setLevel(30)  # 30 is logging.WARNING
@@ -223,7 +219,7 @@ class MP730026(DMM):
                 self.connected = True
 
                 await client.start_notify(
-                    CHARACTERISTIC_UUID, self.__notification_handler
+                    DMM.NOTIFY_CHARACTERISTIC, self.__notification_handler
                 )
 
                 while await client.is_connected():
