@@ -211,6 +211,7 @@ class MP730026(DMM):
 
             try:
                 while not await client.connect():
+                    # Wait for a connection
                     pass
 
                 x = await client.is_connected()
@@ -223,6 +224,9 @@ class MP730026(DMM):
                 )
 
                 while await client.is_connected():
+                    # Just hang out here and wait while the meter is connected.
+                    # This allows the notification to run when updates are recieved
+                    # but also do cleanup when it disconnects.
                     pass
 
                 self.value = False
