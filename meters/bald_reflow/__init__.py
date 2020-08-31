@@ -23,6 +23,8 @@ class BaldReflow(DMM):
     Connect to BaldEngineers Reflow Oven controller
     """
 
+    NOTIFY_CHARACTERISTIC = "0000fff4-0000-1000-8000-00805f9b34fb"
+
     def __init__(self, MAC: str = "autoscan"):
         # Load the parent class values
         DMM.__init__(self, MAC)
@@ -31,7 +33,7 @@ class BaldReflow(DMM):
         self.MAC = MAC
 
     async def scan(self):
-        logger.warning(f"Scanning for devices with the name BaldReflow")
+        logger.warning(f"Scanning for devices with the name baldref")
         try:
             devices = await discover()
         except RemoteError:
@@ -39,41 +41,57 @@ class BaldReflow(DMM):
             _exit(0)
 
         for d in devices:
-            if d.name == "BaldReflow":
+            if d.name == "baldref":
                 self.MAC = d.address
 
         return self.MAC
 
-    def __decode_settings(self, data: bytearray) -> namedtuple:
-        settings = data[0]
+    def __decode_status(self, data: bytearray) -> namedtuple:
+        status = data[0]
 
         # Create named tuple to return values
-        nt = namedtuple("Settings", ["mode", "suffix"])
+        nt = namedtuple("Status", ["mode", "suffix", "relay_on"])
 
         # Process the recieved data
         mode = "temp"
         suffix = "C"
 
-        value = nt(mode, suffix)
+        relay_on = bool(status & 1)  # 1000
+        x = bool(status & 2)  # 0100
+        y = bool(status & 4)  # 0010
+        z = bool(status & 8)  # 0001
+
+        value = nt(mode, suffix, relay_on)
 
         return value
 
-    def __decode_value(self, data: bytearray) -> int:
-        value = data[1]
+    def __decode_value(self, data: bytearray) -> namedtuple:
+        # temp = data[1]
+        # target_temp = data[2]
+        # time_here = data[3]
+
+        nt = namedtuple("Values", ["temp", "target_temp", "time_here"])
+        value = nt(data[1], data[2], data[3])
 
         # Process the recieved data
+        print(f"Value: {value}")
 
         return value
 
     def parse(self, data: bytearray) -> None:
-        unpacked = struct.unpack(">HH", data)
+        # Packet should be: status bitmask, current temp, target temp, time at this stage
+        unpacked = struct.unpack(">HffH", data)
 
-        settings = self.__decode_settings(unpacked)
-        value = self.__decode_value(unpacked)
+        status = self.__decode_status(unpacked)
+        values = self.__decode_value(unpacked)
 
-        self.mode = settings.mode
-        self.suffix = settings.suffix
-        self.value = value
+        self.mode = status.mode
+        self.suffix = status.suffix
+        # Uses value instead of temp because that is what is read to send the json object
+        self.value = values.temp
+        # These will be used in the future #TODO
+        self.target_temp = values.target_temp
+        self.time_here = values.time_here
 
     def __notification_handler(self, sender: str, data: bytearray) -> None:
         self.parse(data)
@@ -113,7 +131,7 @@ class BaldReflow(DMM):
                 self.connected = True
 
                 await client.start_notify(
-                    DMM.NOTIFY_CHARACTERISTIC, self.__notification_handler
+                    BaldReflow.NOTIFY_CHARACTERISTIC, self.__notification_handler
                 )
 
                 while await client.is_connected():
