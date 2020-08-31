@@ -37,6 +37,8 @@ class MP730026(DMM):
     Pass the MAC address if known, otherwise autoscan will run.
     """
 
+    NOTIFY_CHARACTERISTIC = "0000fff4-0000-1000-8000-00805f9b34fb"
+
     def __init__(self, MAC: str = "autoscan"):
 
         # Load the parent class values
@@ -230,7 +232,7 @@ class MP730026(DMM):
                 self.connected = True
 
                 await client.start_notify(
-                    DMM.NOTIFY_CHARACTERISTIC, self.__notification_handler
+                    MP730026.NOTIFY_CHARACTERISTIC, self.__notification_handler
                 )
 
                 while await client.is_connected():
