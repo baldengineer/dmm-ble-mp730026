@@ -170,9 +170,17 @@ class MP730026(DMM):
 
         return string_to_print
 
-    def parse(self, data: bytearray):
-        """ Update instance with new data"""
-        unpacked = struct.unpack(">HHBB", data)
+    def parse(self, data: bytearray) -> None:
+        """ 
+        Update instance with new data
+        """
+        try:
+            unpacked = struct.unpack(">HHBB", data)
+        except struct.error as e:
+            # Happens most often when powering off the meter.
+            logger.error(e)
+            logger.error("If you just powered off the meter, ignore the above error.")
+            return None
 
         # show what the raw values were, in decimal
         logger.debug(f"	Received: {str(unpacked)}")
