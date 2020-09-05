@@ -52,6 +52,7 @@ values[0xE1F2] = ["cont", "ohm", 3]  # xxx.x (?) cont mode
 ################################
 ## DC Voltage
 ################################
+values[0x18F0] = ["dcv", "mV", 4]
 values[0x19F0] = ["dcv", "mV", 3]
 values[0x1AF0] = ["dcv", "mV", 2]  # DC xx.xx mV
 values[0x1BF0] = ["dcv", "mV", 1]
