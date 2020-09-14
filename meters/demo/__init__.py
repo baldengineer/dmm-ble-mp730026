@@ -36,6 +36,7 @@ class Demo(DMM):
             self.hold = random.choice([True, False])
             self.rel = random.choice([True, False])
             self.autorange = random.choice([True, False])
+            self.low_battery = random.choice([True, False])
 
             _, self.suffix = random.choice(list(self.unit_strings.items()))
 
