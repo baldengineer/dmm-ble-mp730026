@@ -199,6 +199,13 @@
                     return;
             }
             let DMM = JSON.parse(event.data);
+            if (!DMM.connected) {
+                document.getElementById('display').style.display = 'none'
+                document.getElementById('disconnected').style.display = 'block'
+            } else {
+                document.getElementById('display').style.display = 'block'
+                document.getElementById('disconnected').style.display = 'none'
+            }
             if (!DMM.value) {
                 char1.setValue("");
                 char2.setValue("");
