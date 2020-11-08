@@ -1,42 +1,49 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <script type="text/javascript" src="segment-display.js"></script>
     <script src="dmm.js"></script>
-    
+
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
 </head>
-<body style="box-sizing: border-box;" >
-<div id="display" style="display: block;">
-<canvas style="" id="top" width="250" height="20">
-    Your browser does not support the canvas element.
-</canvas>
-<div style="display: block;">
-<canvas style="float: left;;" id="front" width="25" height="40">
-    Your browser does not support the canvas element.
-</canvas>
-<canvas style="float: left;" id="display1" width="40" height="40">
-    Your browser does not support the canvas element.
-</canvas>
-<canvas style="float: left;" id="display2" width="40" height="40">
-    Your browser does not support the canvas element.
-</canvas>
-<canvas style="float: left;" id="display3" width="40" height="40">
-    Your browser does not support the canvas element.
-</canvas>
-<canvas style="float: left;" id="display4" width="40" height="40">
-    Your browser does not support the canvas element.
-</canvas>
-<canvas style="" id="back" width="50" height="40">
-    Your browser does not support the canvas element.
-</canvas>
-</div>
-<canvas style="display: block;" id="bottom" width="250" height="20">
-    Your browser does not support the canvas element.
-</canvas>
-</div>
-</body>
-</html>
 
+<body style="box-sizing: border-box;">
+    <div id="disconnected" style="display: block; text-align: right;">
+        <img src="data:image/png;base64,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"
+            alt="Disconnected"
+            title="Attribution: https://www.flaticon.com/free-icon/multimeter_2052518?term=multimeter&page=1&position=27" />
+    </div>
+    <div id="display" style="display: block;">
+        <canvas style="" id="top" width="250" height="20">
+            Your browser does not support the canvas element.
+        </canvas>
+        <div style="display: block;">
+            <canvas style="float: left;;" id="front" width="25" height="40">
+                Your browser does not support the canvas element.
+            </canvas>
+            <canvas style="float: left;" id="display1" width="40" height="40">
+                Your browser does not support the canvas element.
+            </canvas>
+            <canvas style="float: left;" id="display2" width="40" height="40">
+                Your browser does not support the canvas element.
+            </canvas>
+            <canvas style="float: left;" id="display3" width="40" height="40">
+                Your browser does not support the canvas element.
+            </canvas>
+            <canvas style="float: left;" id="display4" width="40" height="40">
+                Your browser does not support the canvas element.
+            </canvas>
+            <canvas style="" id="back" width="50" height="40">
+                Your browser does not support the canvas element.
+            </canvas>
+        </div>
+        <canvas style="display: block;" id="bottom" width="250" height="20">
+            Your browser does not support the canvas element.
+        </canvas>
+    </div>
+</body>
+
+</html>
