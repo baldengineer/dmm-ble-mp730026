@@ -1,21 +1,24 @@
 # dmm-ble-mp730026
 - [dmm-ble-mp730026](#dmm-ble-mp730026)
 - [About](#about)
-  - [Installation](#installation)
-  - [Before first run](#before-first-run)
-  - [Running](#running)
-  - [Advanced Usage](#advanced-usage)
-  - [Accessing the Data](#accessing-the-data)
-  - [Example URLs](#example-urls)
-    - [Accessing Live Data](#accessing-live-data)
-      - [Examples](#examples)
-    - [Accessing Saved Data](#accessing-saved-data)
-      - [Examples](#examples-1)
-    - [OBS Browser Source](#obs-browser-source)
-    - [Raspberry Pi Permissions](#raspberry-pi-permissions)
-    - [Windows - Failed Building Wheel](#windows---failed-building-wheel)
-    - [Hosting](#hosting)
-  - [Supported Meters](#supported-meters)
+- [Installation](#installation)
+- [Before first run](#before-first-run)
+- [Running](#running)
+- [Advanced Usage](#advanced-usage)
+- [Accessing the Data](#accessing-the-data)
+- [Example URLs](#example-urls)
+  - [Accessing Live Data](#accessing-live-data)
+    - [Examples](#examples)
+  - [Accessing Saved Data](#accessing-saved-data)
+    - [Examples](#examples-1)
+- [OBS](#obs)
+  - [OBS Browser Source](#obs-browser-source)
+  - [OBS - Automatically activate/deactivate Source](#obs---automatically-activatedeactivate-source)
+- [Troubleshooting](#troubleshooting)
+  - [Raspberry Pi Permissions](#raspberry-pi-permissions)
+  - [Windows - Failed Building Wheel](#windows---failed-building-wheel)
+  - [Nginx Hosting](#nginx-hosting)
+- [Supported Meters](#supported-meters)
 
  # About
 
@@ -37,7 +40,7 @@ The intent for the code is to provide an object representing the DMM.
 
 bleak_scan.py can be used to find the MAC address of your meter.
 
-## Installation
+# Installation
 
 The recommended method for installing is to use git on a Raspberry Pi
 
@@ -63,8 +66,8 @@ This will install the appropriate programs needed and create a python virtual en
 Building `dmm.js` requires installing node and some node modules to build it from source. These will install locally inside the scripts folder. The installation script will then build `dmm.js`.
 
 
-
-## Before first run
+---
+# Before first run
 
 Copy the `settings.py.template` to `settings.py` This file will not be over-written on updates.
 
@@ -72,7 +75,8 @@ The `multi_meters` is a comma separated list for each meter you wish to connect 
 
 See [Supported Meters](#supported-meters) for specific configurations to pass.
 
-## Running
+---
+# Running
 
 On Raspberry Pi, use:
 
@@ -85,7 +89,8 @@ Will start up the webserver, websocket server and Bluetooth services for getting
 
 If you get a permissions error on Raspberry Pi see [Raspberry Pi Permissions](#raspberry-pi-permissions)
 
-##  Advanced Usage
+---
+#  Advanced Usage
 
 This library exposes a DMM object that exposes all the data for a mp730026 multimeter
 
@@ -124,8 +129,8 @@ autorange = False
 ```
 
 
-
-## Accessing the Data
+---
+# Accessing the Data
 
 You can access the web front end on port 18881, example: http://192.168.1.71:18881
 
@@ -135,11 +140,12 @@ etc...
 
 These will redirect you to a longer URL that has settings for colors and label text that you can tweak with the information in [Example URLs](#example-urls)
 
-## Example URLs
+---
+# Example URLs
 
 Included is an example for connecting a meter to a web-socket for sending the data across the internet, In this case to a web page to show off the multimeter reading in real time.
 
-### Accessing Live Data
+## Accessing Live Data
 
 Opening meter.html either locally or hosted with the following flags
 
@@ -176,7 +182,7 @@ Color of the brighter foreground elements
 
 
 
-#### Examples
+### Examples
 
 - http://127.0.0.1/index.html?websocketserver=127.0.0.1&websocketport=18881&background=grey&onColor=black&offColor=dimgrey
 - http://localhost/?websocketserver=127.0.0.1&websocketport=18881&background=black&onColor=Lime&offColor=DarkGreen
@@ -185,17 +191,19 @@ Color of the brighter foreground elements
 
 
 
-### Accessing Saved Data
+## Accessing Saved Data
 
 Open saved.html either locally or hosted with the same flags as Accessing Live Data.
 
-#### Examples
+### Examples
 
 - http://127.0.0.1/saved.html?websocketserver=127.0.0.1
 - http://192.168.1.71/saved.html?websocketserver=192.168.1.71&websocketport=18881&meter=0
 - http://localhost/saved.html?websocketserver=127.0.0.1&websocketport=18881&background=black&onColor=Lime&offColor=DarkGreen
 
-### OBS Browser Source
+---
+# OBS
+## OBS Browser Source
 
 This was actually designed to be used with OBS as a browser source. The URL you generated above goes in URL height and width are as follows
 
@@ -206,8 +214,19 @@ height = 85
 
 All other defaults are fine.
 
+## OBS - Automatically activate/deactivate Source
 
-### Raspberry Pi Permissions
+You can configure the meter to automatically turn on and off the OBS Source by passing `obs_source=` and `obs_scene=` when configuring your settings.py. See the settings.py example in [Supported Meters](#supported-meters)
+
+Recommendation for setup is to create a Scene called `Multimeters`, with a Source called `Meter0` as a Browser Source, setting the URL as specified in [Accessing Live Data](#accessing-live-data)
+
+In your settings.py in the `OBS_Settings` class, set `enabled=True`, and the other values as necessary to connect to your OBS instance.
+
+In OBS, you need to install OBS-Websocket from - https://github.com/Palakis/obs-websocket
+
+---
+# Troubleshooting
+## Raspberry Pi Permissions
 
 Permissions for the Pi user to access Bluetooth are needed
 
@@ -217,7 +236,7 @@ sudo adduser pi bluetooth
 
 Also you will need to modify a file according to [this post](https://www.raspberrypi.org/forums/viewtopic.php?p=746917&sid=d3eb670e77ee7fb900499168b1bc83d7#p746917)
 
-### Windows - Failed Building Wheel
+## Windows - Failed Building Wheel
 
 If you get a Failed Building Wheel error or txdbus ModuleNotFound error you need to install the Twisted wheel manually.
 
@@ -233,7 +252,7 @@ pipenv install %userprofile%\Downloads\Twisted-20.3.0-cp38-cp38-win_amd64.whl
 
 Then run `pipenv install` again.
 
-### Hosting
+## Nginx Hosting
 
 The html interface can be locally provided to a web browser or OBS source. However if one desires to host it remotely a nginx file has been provided.
 
@@ -245,13 +264,14 @@ sudo rm /etc/nginx/sites-available/default # Warning: This will remove the defau
 ln ~/dmm-ble-mp730026/nginx-site /etc/nginx/sites-available/default
 ```
 
-## Supported Meters
+---
+# Supported Meters
 
-| Mfg       | Model                                                                                                     | Required Parameters | Optional Parameters | Settings.py Example           |
-| --------- | --------------------------------------------------------------------------------------------------------- | ------------------- | ------------------- | ----------------------------- |
-| Multicomp | [MP730026](https://www.newark.com/multicomp-pro/mp730026-us/handheld-dmm-with-bluetooth-rohs/dp/10AH2405) | MAC_Address         |                     | MP730026("AA:AA:AA:AA:AA:AA") |
-| Owon      | OW18B                                                                                                     | MAC_Address         |                     | OW18B("AA:AA:AA:AA:AA:AA")    |
-|           | Demo                                                                                                      |                     | Name                | Demo(), Demo("My Demo")       |
+| Mfg       | Model                                                                                                     | Required Parameters | Optional Parameters         | Settings.py Example                                                          |
+| --------- | --------------------------------------------------------------------------------------------------------- | ------------------- | --------------------------- | ---------------------------------------------------------------------------- |
+| Multicomp | [MP730026](https://www.newark.com/multicomp-pro/mp730026-us/handheld-dmm-with-bluetooth-rohs/dp/10AH2405) | MAC_Address         | obs_scene="", obs_source="" | `MP730026("AA:AA:AA:AA:AA:AA",obs_scene="MultiMeters", obs_source="Meter0")` |
+| Owon      | OW18B                                                                                                     | MAC_Address         | obs_scene="", obs_source="" | `OW18B("AA:AA:AA:AA:AA:AA")`                                                 |
+|           | Demo                                                                                                      |                     | Name                        | Demo(), Demo("My Demo")                                                      |
 
 Support for more meters is in progress. If you have a meter you would like to be supported, please check the [Issues](https://github.com/baldengineer/dmm-ble-mp730026/issues), and add a new Issue if no one else has requested it.
 

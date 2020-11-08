@@ -39,7 +39,7 @@ class MP730026(DMM):
     Pass the MAC address if known, otherwise autoscan will run.
     """
 
-    def __init__(self, MAC: str = "autoscan"):
+    def __init__(self, MAC: str = "autoscan", **kwargs):
 
         # Load the parent class values
         DMM.__init__(self, MAC)
@@ -48,6 +48,35 @@ class MP730026(DMM):
         self.MAC = MAC
         self.output_to_console = False
         self.model = "Multicomp Pro MP730026"
+
+        self.__connected = False
+
+        self.obs_scene = kwargs["obs_scene"] if kwargs.get("obs_scene", False) else None
+        self.obs_source = kwargs["obs_source"] if kwargs.get("obs_source", False) else None
+        if self.obs_scene and self.obs_source:
+            from obs import OBS
+
+            self.obs_instance = OBS()
+        else:
+            self.obs_instance = None
+
+    @property
+    def connected(self):
+        return self.__connected
+
+    @connected.setter
+    def connected(self, connected: bool):
+
+        try:
+            # Check if the scene and source have been defined
+            if self.obs_scene and self.obs_source:
+                # If so, tell OBS to toggle it based on the value
+                self.obs_instance.send(connected, self.obs_scene, self.obs_source)
+        except AttributeError:
+            # Happens on startup because the variables haven't been created yet
+            ...
+
+        self.__connected = connected
 
     async def scan(self):
         logger.warning("Scanning for devices with the name BDM")
