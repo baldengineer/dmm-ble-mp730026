@@ -8,10 +8,10 @@ class OW18B(MP730026):
     we will just inherit that and use it.
     """
 
-    def __init__(self, MAC: str = "autoscan"):
+    def __init__(self, MAC: str = "autoscan", **kwargs):
 
         # Load the parent class values
-        MP730026.__init__(self, MAC)
+        MP730026.__init__(self, MAC, **kwargs)
 
         # Local meter values below here.
         self.MAC = MAC
