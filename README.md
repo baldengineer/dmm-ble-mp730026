@@ -8,7 +8,6 @@
   - [Accessing the Data](#accessing-the-data)
   - [Example URLs](#example-urls)
     - [Accessing Live Data](#accessing-live-data)
-      - [**background**](#background)
       - [Examples](#examples)
     - [Accessing Saved Data](#accessing-saved-data)
       - [Examples](#examples-1)
@@ -158,7 +157,7 @@ Give an integer value that matches the index in your settings.py. For the first 
 
 Defaults to meter 0 if no value is passed, or is an invalid value.
 
-#### **background**
+**background**
 
 RGB syntax or [HTML color names](https://htmlcolorcodes.com/color-names/),
 
@@ -229,10 +228,10 @@ If you are using python 3.8, windows 64 bit download Twisted-20.3.0-cp38-cp38-wi
 Then install with
 ```
 source .venv/Scripts/activate
-pip install %userprofile%\Downloads\Twisted-20.3.0-cp38-cp38-win_amd64.whl
+pipenv install %userprofile%\Downloads\Twisted-20.3.0-cp38-cp38-win_amd64.whl
 ```
 
-Then run `pip install -r requirements.txt` again.
+Then run `pipenv install` again.
 
 ### Hosting
 
