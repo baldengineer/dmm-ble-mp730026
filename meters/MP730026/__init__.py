@@ -4,20 +4,18 @@
 # MIT License
 # MP730026
 # Module to decode and manages instances of a BLE DMM mp730026
-import struct
-import numpy as np
-
-from bleak import BleakClient
-from bleak import _logger as bleaklogger
-from bleak import exc
-from bleak import discover
-
-from txdbus.error import RemoteError  # Used for bluetooth errors
 import asyncio
-from re import match as re_match
-from fastapi import logger as _logger
-
+import struct
 from os import _exit
+from re import match as re_match
+
+import numpy as np
+from bleak import _logger as bleaklogger
+from bleak import BleakClient
+from bleak import discover
+from bleak import exc
+from fastapi import logger as _logger
+from txdbus.error import RemoteError  # Used for bluetooth errors
 
 from .. import DMM
 from .value_table import values
@@ -52,7 +50,7 @@ class MP730026(DMM):
         self.model = "Multicomp Pro MP730026"
 
     async def scan(self):
-        logger.warning(f"Scanning for devices with the name BDM")
+        logger.warning("Scanning for devices with the name BDM")
         try:
             devices = await discover()
         except RemoteError:
@@ -98,9 +96,7 @@ class MP730026(DMM):
             mode_str = str(hex(mode))  # its a new mode, so display it
             units_str = "?"
             range_decimal_pos = 5
-            logger.error(
-                f"Unknown Values - MP730026.__decode_mode_and_range.mode={hex(mode)}"
-            )
+            logger.error(f"Unknown Values - MP730026.__decode_mode_and_range.mode={hex(mode)}")
 
         value = [mode, mode_str, units_str, range_decimal_pos]
         logger.debug("	decode_mode: " + str(value))
@@ -138,11 +134,7 @@ class MP730026(DMM):
 
             if decimal_position < 5:
                 # only process decimal if valid, 5 isn't a valid position
-                final_value = (
-                    final_value[:decimal_position]
-                    + "."
-                    + final_value[decimal_position:]
-                )
+                final_value = final_value[:decimal_position] + "." + final_value[decimal_position:]
                 if readingMSB > 0x7F:
                     final_value = "-" + final_value
                     self.negative = True
@@ -171,7 +163,7 @@ class MP730026(DMM):
         return string_to_print
 
     def parse(self, data: bytearray) -> None:
-        """ 
+        """
         Update instance with new data
         """
         try:
@@ -237,9 +229,7 @@ class MP730026(DMM):
 
                 self.connected = True
 
-                await client.start_notify(
-                    CHARACTERISTIC_UUID, self.__notification_handler
-                )
+                await client.start_notify(CHARACTERISTIC_UUID, self.__notification_handler)
 
                 while await client.is_connected():
                     pass
