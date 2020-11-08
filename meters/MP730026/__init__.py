@@ -226,7 +226,9 @@ class MP730026(DMM):
                 if self.ol_count > self.ol_count_limit:
                     # Even though we are modifying self.connected, the main
                     # loop doesn't check that to maintain connectivity.
-                    self.connected = False
+                    # Only modify self.connected once, so it's not hammering OBS
+                    if self.connected:
+                        self.connected = False
             else:
                 # We got any value other than O.L so reset the whole process
                 self.ol_count = 0

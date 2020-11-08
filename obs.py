@@ -2,6 +2,7 @@ from fastapi import logger as _logger
 from obswebsocket import obsws
 from obswebsocket import requests
 from obswebsocket.exceptions import ConnectionFailure
+from websocket._exceptions import WebSocketConnectionClosedException
 
 from settings import OBS_Settings
 
@@ -26,6 +27,8 @@ class OBS:
             except ConnectionFailure:
                 self.__connected = False
                 logger.warning("OBS failed to connect.")
+            except Exception as e:
+                print(type(e), e)
 
         return self.__connected
 
@@ -36,5 +39,10 @@ class OBS:
         """
 
         if self.connected:
-            self.client.call(requests.SetSceneItemRender(source, enabled, scene))
-            logger.info
+            try:
+                self.client.call(requests.SetSceneItemRender(source, enabled, scene))
+            except WebSocketConnectionClosedException:
+                self.client.disconnect()
+                self.__connected = False
+            except Exception as e:
+                print(type(e), e)
