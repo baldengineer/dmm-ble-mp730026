@@ -218,7 +218,7 @@ All other defaults are fine.
 
 You can configure the meter to automatically turn on and off the OBS Source by passing `obs_source=` and `obs_scene=` when configuring your settings.py. See the settings.py example in [Supported Meters](#supported-meters)
 
-Recommendation for setup is to create a Scene called `Multimeters`, with a Source called `Meter0` as a Browser Source, setting the URL as specified in [Accessing Live Data](#accessing-live-data)
+Recommendation for setup is to create a Scene called `Multimeters`, with a Source called `Meter0` as a Browser Source, setting the URL as specified in [Accessing Live Data](#accessing-live-data). Then adding the `Multimeters` scene as a Source in your primary scene.
 
 In your settings.py in the `OBS_Settings` class, set `enabled=True`, and the other values as necessary to connect to your OBS instance.
 
