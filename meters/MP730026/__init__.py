@@ -60,6 +60,10 @@ class MP730026(DMM):
         else:
             self.obs_instance = None
 
+        self.ol_count = 0
+        self.ol_count_limit = 60  # A 60 count equates to approximately 30 seconds
+        self.ol_hide_enable = kwargs["ol_hide_enable"] if kwargs.get("ol_hide_enable", False) else False
+
     @property
     def connected(self):
         return self.__connected
@@ -213,6 +217,21 @@ class MP730026(DMM):
 
         # Save our values
         self.value = self.__decode_reading_into_hex(unpacked, mode_range)
+
+        # If we sit in O.L for too long, hide the meter.. if enabled
+        if self.ol_hide_enable:
+            if self.value == "O.L":
+                self.ol_count += 1
+                print(self.ol_count)
+                if self.ol_count > self.ol_count_limit:
+                    # Even though we are modifying self.connected, the main
+                    # loop doesn't check that to maintain connectivity.
+                    self.connected = False
+            else:
+                # We got any value other than O.L so reset the whole process
+                self.ol_count = 0
+                self.connected = True
+
         (
             self.hold,
             self.rel,
