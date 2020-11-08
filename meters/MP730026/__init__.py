@@ -222,7 +222,6 @@ class MP730026(DMM):
         if self.ol_hide_enable:
             if self.value == "O.L":
                 self.ol_count += 1
-                print(self.ol_count)
                 if self.ol_count > self.ol_count_limit:
                     # Even though we are modifying self.connected, the main
                     # loop doesn't check that to maintain connectivity.
