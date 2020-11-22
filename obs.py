@@ -40,7 +40,7 @@ class OBS:
 
         if self.connected:
             try:
-                self.client.call(requests.SetSceneItemRender(source, enabled, scene))
+                self.client.call(requests.SetSceneItemRender(enabled, source, scene))
             except WebSocketConnectionClosedException:
                 self.client.disconnect()
                 self.__connected = False
