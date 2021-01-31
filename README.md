@@ -37,6 +37,23 @@ cd ~/dmm-ble-mp730026
 ./pi_setup.sh
 ```
 
+A systemd service file is provided for your convience. It will need to be edited to point to your working directory and virtual enviroments python binary. 
+```
+[Unit]
+Description=Bluetooth DMM broker
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory=/path/to/dmm-ble-mp730026/
+ExecStart=/path/to/dmm-ble-mp730026/.venv/bin/python3 main.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+
 setup on Windows:
 ```
 WIP

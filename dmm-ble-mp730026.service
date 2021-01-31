@@ -1,0 +1,14 @@
+[Unit]
+Description=Bluetooth DMM broker
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory=/home/pi/dmm-ble-mp730026/
+ExecStart=/home/pi/dmm-ble-mp730026/.venv/bin/python3 main.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
