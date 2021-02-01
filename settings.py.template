@@ -1,4 +1,15 @@
 # MIT License
+from dataclasses import dataclass
+
+
+# Setup OBS Settings before importing meter to prevent circular import errors
+@dataclass
+class OBS_Settings:
+    enabled = False
+    ip = "localhost"
+    ws_port = 4444
+    secret = "secret"
+
 
 # Import your meter - Uncomment the ones you need
 from meters.demo import Demo

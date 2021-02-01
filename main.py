@@ -1,17 +1,16 @@
-import websockets
 import asyncio
 import logging
-import uvicorn
 from os import _exit
-from fastapi import FastAPI, WebSocket
-from fastapi.responses import FileResponse, HTMLResponse
+
+import uvicorn
+from fastapi import FastAPI
+
 
 try:
     import settings
 except ModuleNotFoundError:
     print(
-        "Settings.py does not exist.\r\n"
-        "Copy settings.py.template to settings.py and modify to your settings.",
+        "Settings.py does not exist.\r\n" "Copy settings.py.template to settings.py and modify to your settings.",
     )
     _exit(0)
 
@@ -27,6 +26,7 @@ logger = logging.getLogger("app")
 app.include_router(ws.router)  # Websocket Routes
 app.include_router(index.router)  # Index pages
 
+
 # Startup event adds the meters to the main asyncio loop
 @app.on_event("startup")
 async def startup_event():
@@ -39,4 +39,3 @@ async def startup_event():
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=18881, ws="websockets", reload=True)
-

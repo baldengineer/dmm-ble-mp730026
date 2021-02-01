@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+asyncio = "*"
+numpy = "*"
+bleak = "*"
+websockets = "*"
+fastapi = "*"
+uvicorn = "*"
+aiofiles = "*"
+txdbus = "*"
+obs-websocket-py = {ref = "a352443691def00bff32cbea6e068c31b5a744c2", git = "https://github.com/SLiX69/obs-websocket-py.git"}
+
+[dev-packages]
+pre-commit = "*"
+
+[requires]
+python_version = "3.8"

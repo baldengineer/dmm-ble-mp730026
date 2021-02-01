@@ -1,3 +1,2 @@
 #!/bin/bash
-source .venv/bin/activate
-python main.py
+pipenv run python main.py

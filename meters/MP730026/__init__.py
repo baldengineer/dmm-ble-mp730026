@@ -4,20 +4,18 @@
 # MIT License
 # MP730026
 # Module to decode and manages instances of a BLE DMM mp730026
-import struct
-import numpy as np
-
-from bleak import BleakClient
-from bleak import _logger as bleaklogger
-from bleak import exc
-from bleak import discover
-
-from txdbus.error import RemoteError  # Used for bluetooth errors
 import asyncio
-from re import match as re_match
-from fastapi import logger as _logger
-
+import struct
 from os import _exit
+from re import match as re_match
+
+import numpy as np
+from bleak import _logger as bleaklogger
+from bleak import BleakClient
+from bleak import discover
+from bleak import exc
+from fastapi import logger as _logger
+from txdbus.error import RemoteError  # Used for bluetooth errors
 
 from .. import DMM
 from .value_table import values
@@ -41,7 +39,7 @@ class MP730026(DMM):
     Pass the MAC address if known, otherwise autoscan will run.
     """
 
-    def __init__(self, MAC: str = "autoscan"):
+    def __init__(self, MAC: str = "autoscan", **kwargs):
 
         # Load the parent class values
         DMM.__init__(self, MAC)
@@ -51,8 +49,41 @@ class MP730026(DMM):
         self.output_to_console = False
         self.model = "Multicomp Pro MP730026"
 
+        self.__connected = False
+
+        self.obs_scene = kwargs["obs_scene"] if kwargs.get("obs_scene", False) else None
+        self.obs_source = kwargs["obs_source"] if kwargs.get("obs_source", False) else None
+        if self.obs_scene and self.obs_source:
+            from obs import OBS
+
+            self.obs_instance = OBS()
+        else:
+            self.obs_instance = None
+
+        self.ol_count = 0
+        self.ol_count_limit = 60  # A 60 count equates to approximately 30 seconds
+        self.ol_hide_enable = kwargs["ol_hide_enable"] if kwargs.get("ol_hide_enable", False) else False
+
+    @property
+    def connected(self):
+        return self.__connected
+
+    @connected.setter
+    def connected(self, connected: bool):
+
+        try:
+            # Check if the scene and source have been defined
+            if self.obs_scene and self.obs_source:
+                # If so, tell OBS to toggle it based on the value
+                self.obs_instance.send(connected, self.obs_scene, self.obs_source)
+        except AttributeError:
+            # Happens on startup because the variables haven't been created yet
+            ...
+
+        self.__connected = connected
+
     async def scan(self):
-        logger.warning(f"Scanning for devices with the name BDM")
+        logger.warning("Scanning for devices with the name BDM")
         try:
             devices = await discover()
         except RemoteError:
@@ -98,9 +129,7 @@ class MP730026(DMM):
             mode_str = str(hex(mode))  # its a new mode, so display it
             units_str = "?"
             range_decimal_pos = 5
-            logger.error(
-                f"Unknown Values - MP730026.__decode_mode_and_range.mode={hex(mode)}"
-            )
+            logger.error(f"Unknown Values - MP730026.__decode_mode_and_range.mode={hex(mode)}")
 
         value = [mode, mode_str, units_str, range_decimal_pos]
         logger.debug("	decode_mode: " + str(value))
@@ -138,11 +167,7 @@ class MP730026(DMM):
 
             if decimal_position < 5:
                 # only process decimal if valid, 5 isn't a valid position
-                final_value = (
-                    final_value[:decimal_position]
-                    + "."
-                    + final_value[decimal_position:]
-                )
+                final_value = final_value[:decimal_position] + "." + final_value[decimal_position:]
                 if readingMSB > 0x7F:
                     final_value = "-" + final_value
                     self.negative = True
@@ -171,7 +196,7 @@ class MP730026(DMM):
         return string_to_print
 
     def parse(self, data: bytearray) -> None:
-        """ 
+        """
         Update instance with new data
         """
         try:
@@ -192,6 +217,22 @@ class MP730026(DMM):
 
         # Save our values
         self.value = self.__decode_reading_into_hex(unpacked, mode_range)
+
+        # If we sit in O.L for too long, hide the meter.. if enabled
+        if self.ol_hide_enable:
+            if self.value == "O.L":
+                self.ol_count += 1
+                if self.ol_count > self.ol_count_limit:
+                    # Even though we are modifying self.connected, the main
+                    # loop doesn't check that to maintain connectivity.
+                    # Only modify self.connected once, so it's not hammering OBS
+                    if self.connected:
+                        self.connected = False
+            else:
+                # We got any value other than O.L so reset the whole process
+                self.ol_count = 0
+                self.connected = True
+
         (
             self.hold,
             self.rel,
@@ -237,9 +278,7 @@ class MP730026(DMM):
 
                 self.connected = True
 
-                await client.start_notify(
-                    CHARACTERISTIC_UUID, self.__notification_handler
-                )
+                await client.start_notify(CHARACTERISTIC_UUID, self.__notification_handler)
 
                 while await client.is_connected():
                     pass
