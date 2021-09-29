@@ -15,6 +15,7 @@ class OBS_Settings:
 from meters.demo import Demo
 from meters.MP730026 import MP730026
 
+# from meters.openvapors import openvapors
 # from meters.OW18B import OW18B
 
 
