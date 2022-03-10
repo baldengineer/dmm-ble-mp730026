@@ -18,4 +18,4 @@ obs-websocket-py = {ref = "a352443691def00bff32cbea6e068c31b5a744c2", git = "htt
 pre-commit = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3.7"
